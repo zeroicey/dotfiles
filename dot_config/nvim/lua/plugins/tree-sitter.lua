@@ -1,0 +1,33 @@
+return {
+	"nvim-treesitter/nvim-treesitter",
+	branch = "master",
+	lazy = false,
+	build = ":TSUpdate",
+	main = "nvim-treesitter.configs",
+	opts = {
+		sync_install = false,
+		auto_install = true,
+		highlight = {
+			enable = true,
+		},
+		ensure_installed = {
+			"c",
+			"java",
+			"lua",
+			"vim",
+			"vimdoc",
+			"query",
+			"markdown",
+			"markdown_inline",
+			"javascript",
+			"typescript",
+			"html",
+			"css",
+			"python",
+			"rust",
+			"bash",
+			"go",
+			"sql",
+		},
+	},
+}
