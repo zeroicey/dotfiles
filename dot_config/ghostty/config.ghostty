@@ -1,5 +1,3 @@
-shell-integration-features = no-cursor,ssh-terminfo,ssh-env
-
 # Disable Alt+number tab switching
 keybind = alt+1=unbind
 keybind = alt+2=unbind
