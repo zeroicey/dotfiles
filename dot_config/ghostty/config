@@ -1,4 +1,18 @@
-font-family = Cascadia Code NF
+font-family = JetBrainsMono Nerd Font
 font-size = 14
 background-opacity = 0.85
-background-blur-radius = 20
+background-blur = 20
+
+# Cursor style: block, bar, underline, block_hollow
+cursor-style = block
+
+# Disable Alt+number tab switching
+keybind = alt+1=unbind
+keybind = alt+2=unbind
+keybind = alt+3=unbind
+keybind = alt+4=unbind
+keybind = alt+5=unbind
+keybind = alt+6=unbind
+keybind = alt+7=unbind
+keybind = alt+8=unbind
+keybind = alt+9=unbind
