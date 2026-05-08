@@ -5,3 +5,6 @@ background-blur = 20
 
 # Cursor style: block, bar, underline, block_hollow
 cursor-style = block
+
+# Disable shell integration cursor override (prevents it from changing cursor to bar)
+shell-integration-features = no-cursor,ssh-terminfo,ssh-env
