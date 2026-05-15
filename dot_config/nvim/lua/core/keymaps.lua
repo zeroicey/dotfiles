@@ -50,22 +50,16 @@ keymap("n", "<leader>r", ":update<CR> :source<CR>")
 -- -----------------------------------------------------------------------------
 
 -- Normal Mode
--- Faster line navigation
 keymap("n", "H", "^", { desc = "Go to First Character of Line" })
 keymap("n", "L", "$", { desc = "Go to End of Line" })
-keymap("n", "J", "5j", { desc = "Move Down 5 Lines" })
-keymap("n", "K", "5k", { desc = "Move Up 5 Lines" })
 
 -- Visual Mode
 -- Stay in indent mode after indenting
 keymap("v", "<", "<gv", { desc = "Indent Left" })
 keymap("v", ">", ">gv", { desc = "Indent Right" })
 
--- Faster line navigation in Visual Mode
 keymap("v", "H", "^", { desc = "Extend Selection to First Character" })
 keymap("v", "L", "g_", { desc = "Extend Selection to End of Line" })
-keymap("v", "J", "5j", { desc = "Extend Selection Down 5 Lines" })
-keymap("v", "K", "5k", { desc = "Extend Selection Up 5 Lines" })
 
 -- -----------------------------------------------------------------------------
 -- Plugin Keymaps

@@ -102,6 +102,7 @@ if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} 
   source ${ZIM_HOME}/zimfw.zsh init
 fi
 # Initialize modules.
+source $HOME/.fzf.zsh
 source ${ZIM_HOME}/init.zsh
 # }}} End configuration added by Zim Framework install
 
@@ -138,14 +139,12 @@ function proxyoff() {
     echo -e "System proxy disable 🔴"
 }
 
-source $HOME/.fzf.zsh
-
 # Tools
 ## zoxide
 eval "$(zoxide init zsh)"
 
 ## opencode
-export PATH=/home/oicey/.opencode/bin:$PATH
+export PATH=$HOME/.opencode/bin:$PATH
 
 ## yazi
 function y() {
@@ -163,7 +162,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
 
 ## fnm
-FNM_PATH="/home/oicey/.local/share/fnm"
+FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
   eval "$(fnm env --shell bash)"
@@ -173,7 +172,7 @@ fi
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 # bun completions
-[ -s "/home/oicey/.bun/_bun" ] && source "/home/oicey/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 ###-begin-pm2-completion-###
 ### credits to npm for the completion file model
@@ -215,3 +214,5 @@ elif type compctl &>/dev/null; then
   compctl -K _pm2_completion + -f + pm2
 fi
 ###-end-pm2-completion-###
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
