@@ -165,7 +165,12 @@ export PATH="$HOME/go/bin:$PATH"
 FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
-  eval "$(fnm env --shell bash)"
+  eval "$(fnm env --shell zsh)"
+fi
+
+## pnpm
+if (( ${+commands[corepack]} )) && [ ! -x "$HOME/.local/bin/pnpm" ]; then
+  corepack enable --install-directory "$HOME/.local/bin" pnpm >/dev/null 2>&1
 fi
 
 ## bun
