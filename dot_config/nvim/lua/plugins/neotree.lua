@@ -24,7 +24,10 @@ return {
 			close_if_last_window = true,
 			filesystem = {
 				window = {
+					width = 30,
+					auto_expand_width = true,
 					mappings = {
+						["e"] = "toggle_auto_expand_width",
 						["l"] = "open",
 						["oc"] = "none",
 						["od"] = "none",
