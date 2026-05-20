@@ -80,10 +80,11 @@ set -g @catppuccin_flavor 'frappe'
 run ~/.config/tmux/plugins/tmux/catppuccin.tmux
 # Show all sessions on the pane top border while keeping the main status bar at the bottom.
 set -g pane-border-status top
-set -g pane-border-format ' sessions #{S:#S ,#S* }'
+set -g pane-border-lines spaces
+set -g pane-border-format '#{S:#[fg=#{@thm_overlay_0}]#[bg=#{@thm_surface_0}] #S #[default],#[fg=#{@thm_crust}]#[bg=#{@thm_lavender}]#[bold] #S #[nobold]#[default]}'
 # Make the status line more pleasant.
 set -g status-left ""
-set -g status-right '#[fg=#{@thm_crust},bg=#{@thm_teal}] session: #S '
+set -g status-right ""
 
 # Ensure that everything on the right side of the status line
 # is included.
