@@ -87,7 +87,6 @@ local mason_tools = {
 	"prettierd",
 	"isort",
 	"black",
-	"typescript-language-server",
 }
 
 return {
