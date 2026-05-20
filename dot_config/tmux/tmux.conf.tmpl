@@ -3,7 +3,10 @@ set -ga terminal-overrides ",*:RGB"
 set -g mouse on
 set -g set-clipboard on
 
-set -g default-shell /usr/bin/zsh
+{{- $zsh := lookPath "zsh" -}}
+{{- if $zsh }}
+set -g default-shell "{{ $zsh }}"
+{{- end }}
 
 # Start windows and panes at 1, not 0
 set -g base-index 1
@@ -14,13 +17,16 @@ set-option -g renumber-windows on
 # Keybinds
 unbind C-b
 set -g prefix M-w
+set -g prefix2 None
 bind M-w send-prefix
 
 # Reload config
 unbind r
 bind r source-file $HOME/.config/tmux/tmux.conf
 
-# Alt+number to switch to window 1-9
+# Alt+1..8 to switch windows, Alt+9/0 to switch sessions
+unbind -n M-9
+unbind -n M-0
 bind -n M-1 select-window -t 1
 bind -n M-2 select-window -t 2
 bind -n M-3 select-window -t 3
@@ -29,15 +35,18 @@ bind -n M-5 select-window -t 5
 bind -n M-6 select-window -t 6
 bind -n M-7 select-window -t 7
 bind -n M-8 select-window -t 8
-bind -n M-9 select-window -t 9
+bind -n M-9 switch-client -p
+bind -n M-0 switch-client -n
 
 # Prefix+h/l to switch windows
-# Prefix+j/k to switch sessions
+# Prefix+(/) to switch sessions
 # Prefix+o to create new window
+unbind j
+unbind k
 bind h previous-window
 bind l next-window
-bind j switch-client -p
-bind k switch-client -n
+bind ( switch-client -p
+bind ) switch-client -n
 bind o new-window
 
 # Vim like pane selection
@@ -62,13 +71,16 @@ unbind '"'
 bind \\ split-window -h -c "#{pane_current_path}"
 bind - split-window -v -c "#{pane_current_path}"
 
-# Maximize window
+# Toggle zoom for the current pane
 unbind z
-bind m resize-pane -Z
+bind z resize-pane -Z
 
 # Catppuccin
 set -g @catppuccin_flavor 'frappe'
 run ~/.config/tmux/plugins/tmux/catppuccin.tmux
+# Show all sessions on the pane top border while keeping the main status bar at the bottom.
+set -g pane-border-status top
+set -g pane-border-format ' sessions #{S:#S ,#S* }'
 # Make the status line more pleasant.
 set -g status-left ""
 set -g status-right '#[fg=#{@thm_crust},bg=#{@thm_teal}] session: #S '
