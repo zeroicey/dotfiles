@@ -1,10 +1,42 @@
+local vue_language_server_path = vim.fn.stdpath("data")
+	.. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+
+local vue_typescript_plugin = {
+	name = "@vue/typescript-plugin",
+	location = vue_language_server_path,
+	languages = { "vue" },
+	configNamespace = "typescript",
+}
+
 local servers = {
 	clangd = {},
 	marksman = {},
+	markdown_oxide = {
+		capabilities = {
+			workspace = {
+				didChangeWatchedFiles = {
+					dynamicRegistration = true,
+				},
+			},
+		},
+	},
 	tailwindcss = {},
 	cssls = {},
 	html = {},
 	emmet_ls = {},
+	vue_ls = {},
+	vtsls = {
+		filetypes = { "vue" },
+		settings = {
+			vtsls = {
+				tsserver = {
+					globalPlugins = {
+						vue_typescript_plugin,
+					},
+				},
+			},
+		},
+	},
 	gopls = {
 		settings = {
 			gopls = {
@@ -132,14 +164,7 @@ return {
 			config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
 			return config
 		end
-
-		local function prompt_workspace_symbols()
-			vim.ui.input({ prompt = "Workspace symbols > " }, function(query)
-				if query and query ~= "" then
-					vim.lsp.buf.workspace_symbol(query)
-				end
-			end)
-		end
+		local telescope_builtin = require("telescope.builtin")
 
 		for server_name, server_config in pairs(servers) do
 			vim.lsp.config(server_name, with_blink_capabilities(server_config))
@@ -154,18 +179,18 @@ return {
 					vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 				end
 
-				map("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+				map("gd", telescope_builtin.lsp_definitions, "[G]oto [D]efinition")
 				map("gh", vim.lsp.buf.hover, "Hover Documentation")
-				map("gI", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
+				map("gI", telescope_builtin.lsp_implementations, "[G]oto [I]mplementation")
 				map("gK", vim.lsp.buf.signature_help, "Signature Help")
 
 				map("grn", vim.lsp.buf.rename, "[R]e[n]ame")
-				map("grr", vim.lsp.buf.references, "[G]oto [R]eferences")
-				map("grt", vim.lsp.buf.type_definition, "[G]oto [T]ype Definition")
+				map("grr", telescope_builtin.lsp_references, "[G]oto [R]eferences")
+				map("grt", telescope_builtin.lsp_type_definitions, "[G]oto [T]ype Definition")
 				map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
 				map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-				map("<leader>ls", vim.lsp.buf.document_symbol, "[L]SP Document [S]ymbols")
-				map("<leader>lS", prompt_workspace_symbols, "[L]SP Workspace [S]ymbols")
+				map("<leader>ls", telescope_builtin.lsp_document_symbols, "[L]SP Document [S]ymbols")
+				map("<leader>lS", telescope_builtin.lsp_dynamic_workspace_symbols, "[L]SP Workspace [S]ymbols")
 
 				local function client_supports_method(client, method, bufnr)
 					if vim.fn.has("nvim-0.11") == 1 then

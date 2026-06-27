@@ -23,6 +23,7 @@ return {
 			"typescript",
 			"vim",
 			"vimdoc",
+			"vue",
 			"yaml",
 		},
 		highlight = {
