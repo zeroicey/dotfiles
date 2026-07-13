@@ -41,11 +41,20 @@ opt.signcolumn = "yes" -- show sign column so that text doesn't shift
 -- disable netrw at the very start of your init.lua
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+local python3_host_prog = vim.fn.stdpath("data") .. "/python3-provider/bin/python"
+if vim.fn.executable(python3_host_prog) == 1 then
+	vim.g.python3_host_prog = python3_host_prog
+end
 
 if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
 	opt.shell = "cmd"
-else
+elseif vim.fn.executable("zsh") == 1 then
 	opt.shell = "zsh"
+else
+	opt.shell = "sh"
 end
 
 vim.o.autoread = true
