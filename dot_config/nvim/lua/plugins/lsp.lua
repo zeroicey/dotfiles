@@ -10,7 +10,6 @@ local vue_typescript_plugin = {
 
 local servers = {
 	clangd = {},
-	marksman = {},
 	markdown_oxide = {
 		capabilities = {
 			workspace = {
@@ -81,7 +80,10 @@ local servers = {
 			if client.workspace_folders then
 				local path = client.workspace_folders[1].name
 				local fs_stat = (vim.uv or vim.loop).fs_stat
-				if path ~= vim.fn.stdpath("config") and (fs_stat(path .. "/.luarc.json") or fs_stat(path .. "/.luarc.jsonc")) then
+				if
+					path ~= vim.fn.stdpath("config")
+					and (fs_stat(path .. "/.luarc.json") or fs_stat(path .. "/.luarc.jsonc"))
+				then
 					return
 				end
 			end
@@ -292,11 +294,7 @@ return {
 		vim.keymap.set("n", "<leader>td", function()
 			local enable = not vim.diagnostic.is_enabled()
 			set_diagnostics_enabled(enable)
-			vim.api.nvim_echo(
-				{ { enable and "Diagnostics enabled" or "Diagnostics hidden", "ModeMsg" } },
-				false,
-				{}
-			)
+			vim.api.nvim_echo({ { enable and "Diagnostics enabled" or "Diagnostics hidden", "ModeMsg" } }, false, {})
 		end, { desc = "[T]oggle [D]iagnostics" })
 
 		vim.keymap.set("n", "<leader>de", vim.diagnostic.open_float, { desc = "[D]iagnostic [E]xplain" })

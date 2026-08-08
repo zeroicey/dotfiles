@@ -8,12 +8,12 @@ return {
 			settings = {
 				separate_diagnostic_server = true,
 				publish_diagnostic_on = "insert_leave",
-				complete_function_calls = false,
+				complete_function_calls = true,
 				include_completions_with_insert_text = true,
 				tsserver_file_preferences = {
-					includeCompletionsWithSnippetText = false,
-					includeCompletionsWithClassMemberSnippets = false,
-					includeCompletionsWithObjectLiteralMethodSnippets = false,
+					includeCompletionsWithSnippetText = true,
+					includeCompletionsWithClassMemberSnippets = true,
+					includeCompletionsWithObjectLiteralMethodSnippets = true,
 				},
 				jsx_close_tag = {
 					enable = true,

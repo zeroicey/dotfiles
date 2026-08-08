@@ -2,9 +2,17 @@ return {
 	"folke/which-key.nvim",
 	event = "VeryLazy",
 	opts = {
-		-- your configuration comes here
-		-- or leave it empty to use the default settings
-		-- refer to the configuration section below
+		spec = {
+			{ "<leader>b", group = "Buffers" },
+			{ "<leader>d", group = "Diagnostics" },
+			{ "<leader>f", group = "Find" },
+			{ "<leader>g", group = "Git" },
+			{ "<leader>l", group = "LSP" },
+			{ "<leader>m", group = "Messages" },
+			{ "<leader>n", group = "Noice" },
+			{ "<leader>t", group = "Toggles" },
+			{ "<leader>w", proxy = "<C-w>", group = "Windows" },
+		},
 	},
 	keys = {
 		{

@@ -1,3 +1,7 @@
+local function close_buffer(bufnr)
+	require("core.keymaps.file").close_buffer(bufnr)
+end
+
 return {
 	"akinsho/bufferline.nvim",
 	version = "*",
@@ -10,5 +14,23 @@ return {
 		{ "(", "<cmd>BufferLineMovePrev<cr>", desc = "Move Buffer Left" },
 		{ ")", "<cmd>BufferLineMoveNext<cr>", desc = "Move Buffer Right" },
 	},
-	opts = {},
+	opts = {
+		options = {
+			close_command = close_buffer,
+			right_mouse_command = close_buffer,
+			diagnostics = "nvim_lsp",
+			diagnostics_indicator = function(count, level)
+				local icon = level:match("error") and "󰅚 " or "󰀪 "
+				return " " .. icon .. count
+			end,
+			offsets = {
+				{
+					filetype = "neo-tree",
+					text = "Explorer",
+					text_align = "left",
+					separator = true,
+				},
+			},
+		},
+	},
 }

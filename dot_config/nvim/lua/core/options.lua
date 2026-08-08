@@ -4,6 +4,8 @@ opt.cursorline = true -- Highlight cursor line
 opt.mouse = "a" -- allow the mouse to be used in neovim
 opt.wrap = true -- display lines as one long line
 opt.winborder = "rounded"
+opt.laststatus = 3
+opt.showmode = false
 
 vim.opt.scrolloff = 5
 

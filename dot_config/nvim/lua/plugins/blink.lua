@@ -73,14 +73,14 @@ return {
 				["<C-e>"] = { "hide", "fallback" },
 				["<CR>"] = { "accept", "fallback" },
 
-				["<Tab>"] = { "select_next", "fallback" },
-				["<S-Tab>"] = { "select_prev", "fallback" },
+				["<Tab>"] = { "snippet_forward", "fallback" },
+				["<S-Tab>"] = { "snippet_backward", "fallback" },
 
 				["<Up>"] = { "select_prev", "fallback" },
 				["<Down>"] = { "select_next", "fallback" },
 
-				["<C-p>"] = { "snippet_backward", "fallback" },
-				["<C-n>"] = { "snippet_forward", "fallback" },
+				["<C-p>"] = { "select_prev", "fallback_to_mappings" },
+				["<C-n>"] = { "select_next", "fallback_to_mappings" },
 
 				["<C-b>"] = { "scroll_documentation_up", "fallback" },
 				["<C-f>"] = { "scroll_documentation_down", "fallback" },
@@ -101,7 +101,7 @@ return {
 					treesitter_highlighting = false,
 					window = { border = "rounded" },
 				},
-				list = { selection = { preselect = true } },
+				list = { selection = { preselect = false } },
 				menu = {
 					border = "rounded",
 					draw = {
@@ -139,6 +139,10 @@ return {
 							},
 						},
 					},
+				},
+				ghost_text = {
+					enabled = true,
+					show_with_menu = false,
 				},
 			},
 			signature = {
