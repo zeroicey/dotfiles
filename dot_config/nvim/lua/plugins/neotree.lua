@@ -2,10 +2,13 @@ return {
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
+		cmd = "Neotree",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"MunifTanjim/nui.nvim",
 			"nvim-tree/nvim-web-devicons",
+			"antosha417/nvim-lsp-file-operations",
+			"s1n7ax/nvim-window-picker",
 		},
 		keys = {
 			{
@@ -19,15 +22,31 @@ return {
 				end,
 				desc = "Toggle/Reveal Neo-tree",
 			},
+			{ "<leader>e", "<cmd>Neotree toggle reveal<cr>", desc = "Explorer" },
+			{ "<leader>be", "<cmd>Neotree toggle source=buffers position=right<cr>", desc = "Buffer Explorer" },
+			{ "<leader>gs", "<cmd>Neotree toggle source=git_status position=float<cr>", desc = "Git Status Explorer" },
+			{
+				"<leader>lo",
+				"<cmd>Neotree toggle source=document_symbols position=right<cr>",
+				desc = "Outline Explorer",
+			},
 		},
 		opts = {
 			close_if_last_window = true,
+			source_selector = {
+				winbar = true,
+				sources = {
+					{ source = "filesystem", display_name = " Files " },
+					{ source = "buffers", display_name = " Buffers " },
+					{ source = "git_status", display_name = " Git " },
+					{ source = "document_symbols", display_name = " Symbols " },
+				},
+			},
 			filesystem = {
+				hijack_netrw_behavior = "disabled",
 				window = {
-					width = 30,
-					auto_expand_width = true,
+					width = "30%",
 					mappings = {
-						["e"] = "toggle_auto_expand_width",
 						["l"] = "open",
 						["oc"] = "none",
 						["od"] = "none",
@@ -60,20 +79,22 @@ return {
 				},
 			},
 		},
-	},
-	{
-		"antosha417/nvim-lsp-file-operations",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-neo-tree/neo-tree.nvim", -- makes sure that this loads after Neo-tree.
-		},
-		config = function()
+		config = function(_, opts)
+			require("neo-tree").setup(opts)
 			require("lsp-file-operations").setup()
 		end,
 	},
 	{
+		"antosha417/nvim-lsp-file-operations",
+		lazy = true,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+	},
+	{
 		"s1n7ax/nvim-window-picker",
 		version = "2.*",
+		lazy = true,
 		config = function()
 			require("window-picker").setup({
 				filter_rules = {
