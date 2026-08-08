@@ -1,0 +1,48 @@
+[keys]
+prefix = "alt+w"
+
+# 重载配置 —— 对应 tmux 的 prefix+r source-file
+reload_config = "prefix+r"
+
+# --- tab 切换（herdr 的 tab ≈ tmux 的 window）---
+# 对应 tmux: prefix+h / prefix+l / prefix+o
+previous_tab = "prefix+h"
+next_tab = "prefix+l"
+new_tab = "prefix+o"
+# alt+1..8 直接跳 tab。范围语法 "alt+1..8" 被拒，改用逐条数组拼。
+# alt+9 保留给 workspace 切换，故不含 alt+9。
+switch_tab = ["alt+1", "alt+2", "alt+3", "alt+4", "alt+5", "alt+6", "alt+7", "alt+8"]
+
+# --- workspace 切换（herdr 的 workspace ≈ tmux 的 session）---
+# 对应 tmux: bind -n M-9 switch-client -p / M-0 switch-client -n
+previous_workspace = "alt+9"
+next_workspace = "alt+0"
+
+# --- pane 移动（对应 tmux: bind -n M-h/M-j/M-k/M-l select-pane）---
+focus_pane_left  = "alt+h"
+focus_pane_down  = "alt+j"
+focus_pane_up    = "alt+k"
+focus_pane_right = "alt+l"
+
+# --- 分屏（对应 tmux: prefix+\ 左右、prefix+- 上下）---
+# 注意 herdr 命名相反：split_vertical=左右并排（= tmux 的 -h），
+# split_horizontal=上下堆叠（= tmux 的 -v）。这条映射按 tmux 肌肉记忆来写。
+split_vertical   = "prefix+\\"
+split_horizontal = "prefix+minus"
+
+# --- 其它 ---
+close_pane = "alt+q"          # 对应 tmux: bind -n M-q kill-pane
+# zoom 默认就是 prefix+z，与 tmux 一致，不用写
+
+# --- floax 浮动窗口（对应 tmux-floax 的 M-p）→ herdr 原生 popup ---
+[[keys.command]]
+key = "alt+p"
+type = "popup"
+command = "zsh"
+width = "80%"
+height = "80%"
+
+# --- 从 tmux 带过来的非 UI 行为设置 ---
+[terminal]
+default_shell = "/bin/zsh"    # 对应 set -g default-shell
+new_cwd = "follow"            # 对应分屏时的 -c "#{pane_current_path}"

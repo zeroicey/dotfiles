@@ -3,3 +3,6 @@ README.md
 bun.lock
 commitlint.config.js
 package.json
+dot_config/herdr/*.log
+dot_config/herdr/*.sock
+dot_config/herdr/session.json
