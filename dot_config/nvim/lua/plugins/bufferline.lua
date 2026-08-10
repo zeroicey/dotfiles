@@ -19,18 +19,15 @@ return {
 			close_command = close_buffer,
 			right_mouse_command = close_buffer,
 			diagnostics = "nvim_lsp",
+			separator_style = "thin",
+			indicator = {
+				icon = "▎",
+				style = "underline",
+			},
 			diagnostics_indicator = function(count, level)
 				local icon = level:match("error") and "󰅚 " or "󰀪 "
 				return " " .. icon .. count
 			end,
-			offsets = {
-				{
-					filetype = "neo-tree",
-					text = "Explorer",
-					text_align = "left",
-					separator = true,
-				},
-			},
 		},
 	},
 }

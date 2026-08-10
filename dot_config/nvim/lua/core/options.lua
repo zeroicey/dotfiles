@@ -7,6 +7,16 @@ opt.winborder = "rounded"
 opt.laststatus = 3
 opt.showmode = false
 
+opt.fillchars = {
+	eob = " ", -- no ~ noise below the end of file
+	fold = " ",
+	foldsep = " ",
+	diff = "╱",
+	horiz = "─",
+	vert = "│",
+	msgsep = "‾",
+}
+
 vim.opt.scrolloff = 5
 
 opt.number = true -- show line number

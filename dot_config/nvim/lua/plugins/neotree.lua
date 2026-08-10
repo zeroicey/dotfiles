@@ -23,25 +23,9 @@ return {
 				desc = "Toggle/Reveal Neo-tree",
 			},
 			{ "<leader>e", "<cmd>Neotree toggle reveal<cr>", desc = "Explorer" },
-			{ "<leader>be", "<cmd>Neotree toggle source=buffers position=right<cr>", desc = "Buffer Explorer" },
-			{ "<leader>gs", "<cmd>Neotree toggle source=git_status position=float<cr>", desc = "Git Status Explorer" },
-			{
-				"<leader>lo",
-				"<cmd>Neotree toggle source=document_symbols position=right<cr>",
-				desc = "Outline Explorer",
-			},
 		},
 		opts = {
 			close_if_last_window = true,
-			source_selector = {
-				winbar = true,
-				sources = {
-					{ source = "filesystem", display_name = " Files " },
-					{ source = "buffers", display_name = " Buffers " },
-					{ source = "git_status", display_name = " Git " },
-					{ source = "document_symbols", display_name = " Symbols " },
-				},
-			},
 			filesystem = {
 				hijack_netrw_behavior = "disabled",
 				window = {

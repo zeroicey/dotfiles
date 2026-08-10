@@ -8,6 +8,7 @@ return {
 		ensure_installed = {
 			"bash",
 			"css",
+			"dart",
 			"go",
 			"html",
 			"javascript",
