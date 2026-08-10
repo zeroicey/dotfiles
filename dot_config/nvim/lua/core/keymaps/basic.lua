@@ -4,6 +4,5 @@ local map = require("core.keymaps.utils").map
 map("n", "<Space>", "", {})
 
 map("i", "jj", "<Esc>")
-map("t", "<Esc>", "<C-\\><C-n>")
 
 map("n", ";", ":", { desc = "Open the command" })
