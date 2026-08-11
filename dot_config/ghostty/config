@@ -1,5 +1,6 @@
-font-family = JetBrainsMono Nerd Font
-font-size = 14
+font-family = Cascadia Code NF
+font-size = 13.5
+font-feature = ss01,ss02,ss03,ss19,ss20,calt
 background-opacity = 0.85
 background-blur = 20
 

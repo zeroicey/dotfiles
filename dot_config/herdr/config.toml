@@ -34,13 +34,12 @@ split_horizontal = "prefix+minus"
 close_pane = "alt+q"          # 对应 tmux: bind -n M-q kill-pane
 # zoom 默认就是 prefix+z，与 tmux 一致，不用写
 
-# --- floax 浮动窗口（对应 tmux-floax 的 M-p）→ herdr 原生 popup ---
+# --- floax 浮动窗口（herdr-floax 插件，对应 tmux-floax 的 M-p）---
 [[keys.command]]
 key = "alt+p"
-type = "popup"
-command = "zsh"
-width = "80%"
-height = "80%"
+type = "plugin_action"
+command = "herdr-floax.toggle"
+description = "Toggle floating pane"
 
 # --- 从 tmux 带过来的非 UI 行为设置 ---
 [terminal]
