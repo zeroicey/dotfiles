@@ -16,9 +16,35 @@ map("n", "K", "5k", { desc = "move up 5 lines" })
 map("v", "J", "5j", { desc = "extend selection down 5 lines" })
 map("v", "K", "5k", { desc = "extend selection up 5 lines" })
 
+-- H/L: line start/end (normal + visual)
+map("n", "H", "^", { desc = "go to first char of line" })
+map("n", "L", "$", { desc = "go to end of line" })
+map("v", "H", "^", { desc = "extend selection to first char" })
+map("v", "L", "g_", { desc = "extend selection to end of line" })
+
 -- save and quit
 map("n", ",w", "<cmd>w<CR>", { desc = "save file" })
-map("n", ",q", "<cmd>q<CR>", { desc = "quit" })
+
+-- smart quit: if closing this window leaves only helper windows (e.g. file tree), exit nvim entirely
+map("n", ",q", function()
+	local current = vim.api.nvim_get_current_win()
+	local other_real = false
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		if win ~= current then
+			local buf = vim.api.nvim_win_get_buf(win)
+			if vim.bo[buf].buftype == "" then
+				other_real = true
+				break
+			end
+		end
+	end
+
+	if other_real then
+		vim.cmd("q")
+	else
+		vim.cmd("qa")
+	end
+end, { desc = "quit (with file tree)" })
 
 -- file tree: <A-e>
 -- 1. tree not open: open and focus it
