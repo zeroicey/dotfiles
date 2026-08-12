@@ -7,6 +7,15 @@ local map = vim.keymap.set
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
 
+-- hover: K(default) -> gh
+map("n", "gh", vim.lsp.buf.hover, { desc = "hover documentation" })
+
+-- J/K: 5-line movement (normal + visual)
+map("n", "J", "5j", { desc = "move down 5 lines" })
+map("n", "K", "5k", { desc = "move up 5 lines" })
+map("v", "J", "5j", { desc = "extend selection down 5 lines" })
+map("v", "K", "5k", { desc = "extend selection up 5 lines" })
+
 -- save and quit
 map("n", ",w", "<cmd>w<CR>", { desc = "save file" })
 map("n", ",q", "<cmd>q<CR>", { desc = "quit" })
