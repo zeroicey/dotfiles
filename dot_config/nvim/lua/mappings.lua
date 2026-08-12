@@ -22,7 +22,12 @@ map("n", "<A-e>", function()
 	elseif tree.is_visible() then
 		tree.focus()
 	else
-		tree.find_file()
+		local file = vim.fn.expand("%")
+		if file ~= "" and vim.fn.filereadable(file) == 1 then
+			tree.find_file()
+		else
+			tree.toggle()
+		end
 	end
 end, { desc = "toggle/focus file tree" })
 
