@@ -2,5 +2,7 @@ require "nvchad.options"
 
 -- add yours here!
 
--- local o = vim.o
--- o.cursorlineopt ='both' -- to enable cursorline!
+local o = vim.o
+
+-- keep cursor 8 lines from window edge when scrolling
+o.scrolloff = 8

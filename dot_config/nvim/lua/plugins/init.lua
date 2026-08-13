@@ -16,9 +16,10 @@ return {
   -- test new blink
   -- { import = "nvchad.blink.lazyspec" },
 
-  -- custom nvim-tree: make <l> open like <o>
+  -- custom nvim-tree: make <l> open like <o>, auto-open on directory
   {
     "nvim-tree/nvim-tree.lua",
+    event = "VeryLazy",
     opts = function()
       local nvchad_cfg = require("nvchad.configs.nvimtree")
       local api = require("nvim-tree.api")
