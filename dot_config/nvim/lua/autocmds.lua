@@ -11,3 +11,16 @@ vim.api.nvim_create_autocmd("VimEnter", {
     end
   end,
 })
+
+-- auto-reload files changed on disk (e.g. by external AI tools)
+vim.o.autoread = true
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  callback = function()
+    pcall(vim.cmd.checktime)
+  end,
+})
+
+local check_timer = vim.uv.new_timer()
+check_timer:start(1000, 1500, vim.schedule_wrap(function()
+  pcall(vim.cmd.checktime)
+end))
