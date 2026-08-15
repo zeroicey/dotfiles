@@ -24,6 +24,10 @@ return {
       local nvchad_cfg = require("nvchad.configs.nvimtree")
       local api = require("nvim-tree.api")
 
+      nvchad_cfg.filters = vim.tbl_deep_extend("force", nvchad_cfg.filters or {}, {
+        git_ignored = false,
+      })
+
       nvchad_cfg.on_attach = function(bufnr)
         api.map.on_attach.default(bufnr)
         local function mopts(desc)
