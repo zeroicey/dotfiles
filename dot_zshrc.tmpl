@@ -107,6 +107,10 @@ fi
 if [[ -d ${HOME}/.grok/completions/zsh ]]; then
   fpath=("${HOME}/.grok/completions/zsh" ${fpath:#${HOME}/.grok/completions/zsh})
 fi
+# Register herdr completion before Zim runs compinit.
+if [[ -d ${HOME}/.zsh-completions ]]; then
+  fpath=("${HOME}/.zsh-completions" ${fpath:#${HOME}/.zsh-completions})
+fi
 # Initialize modules.
 source $HOME/.fzf.zsh
 source ${ZIM_HOME}/init.zsh
