@@ -6,3 +6,5 @@ package.json
 dot_config/herdr/*.log
 dot_config/herdr/*.sock
 dot_config/herdr/session.json
+# PowerShell profile 仅在 Windows 生效（.chezmoiignore 匹配的是目标路径）
+{{ if ne .chezmoi.os "windows" }}.powershell{{ end }}

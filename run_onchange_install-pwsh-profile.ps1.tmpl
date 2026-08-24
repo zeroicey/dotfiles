@@ -1,0 +1,31 @@
+{{- if eq .chezmoi.os "windows" -}}
+# 将 chezmoi 管理的 profile 副本同步到 $PROFILE（仅在 Windows 上运行）
+# chezmoi 不自动映射 Windows 特殊目录，故用 run_onchange 脚本安装。
+$src = Join-Path $HOME '.powershell\Microsoft.PowerShell_profile.ps1'
+$dst = $PROFILE
+
+if (-not (Test-Path $src)) {
+    Write-Host "[dotfiles] 源 profile 不存在: $src" -ForegroundColor Yellow
+    exit 0
+}
+
+$dstDir = Split-Path $dst
+if (-not (Test-Path $dstDir)) {
+    New-Item -ItemType Directory -Force -Path $dstDir | Out-Null
+}
+
+$changed = $true
+if (Test-Path $dst) {
+    $a = Get-Content $src -Raw
+    $b = Get-Content $dst -Raw
+    $changed = ($a -ne $b)
+}
+
+if ($changed) {
+    Copy-Item -Path $src -Destination $dst -Force
+    Write-Host "[dotfiles] 已安装 PowerShell profile -> $dst" -ForegroundColor Green
+}
+else {
+    Write-Host "[dotfiles] PowerShell profile 已是最新: $dst" -ForegroundColor Cyan
+}
+{{- end -}}
