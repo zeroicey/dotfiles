@@ -1,7 +1,9 @@
-# Start configuration added by Zim Framework install {{{
+# Start configuration added by Zim Framework install {{ "{{{" }}
 #
 # User configuration sourced by interactive shells
 #
+# 跨平台模板（chezmoi）：通用段所有设备生效；darwin 段仅 macOS；hpcore 段仅运维核心。
+# 模板变量：{{ .chezmoi.os }}（darwin/linux/windows）/ {{ .chezmoi.hostname }}
 
 # -----------------
 # Zsh configuration
@@ -108,7 +110,7 @@ fi
 # Initialize modules.
 source $HOME/.fzf.zsh
 source ${ZIM_HOME}/init.zsh
-# }}} End configuration added by Zim Framework install
+# {{ "}}}" }} End configuration added by Zim Framework install
 
 
 # Alias
@@ -173,10 +175,12 @@ function y() {
 ## User-local binaries, including EasyTier CLI installed at ~/.local/bin
 export PATH="$HOME/.local/bin:$PATH"
 
-## Homebrew Python
+{{ if eq .chezmoi.os "darwin" -}}
+## Homebrew Python (macOS only)
 if [ -d /opt/homebrew/opt/python@3.14/libexec/bin ]; then
   export PATH="/opt/homebrew/opt/python@3.14/libexec/bin:$PATH"
 fi
+{{- end }}
 
 ## Go
 export PATH="$HOME/go/bin:$PATH"
@@ -185,7 +189,11 @@ export PATH="$HOME/go/bin:$PATH"
 FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
+{{ if eq .chezmoi.os "darwin" }}
   eval "$(fnm env --shell zsh)"
+{{ else }}
+  eval "$(fnm env --shell bash)"
+{{ end }}
 fi
 
 ## pnpm
@@ -241,17 +249,73 @@ fi
 ###-end-pm2-completion-###
 
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+{{ if eq .chezmoi.os "darwin" -}}
+# macOS-only: Homebrew mysql/libpq clients
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # Bypass proxy for Tailscale (fix Codex 502 with Clash)
 # qianxing/lmyanyu relay go direct; only fengshao goes through proxy
-# (NO_PROXY = hosts that bypass the proxy)
 export no_proxy="100.103.89.5,100.64.0.0/10,127.0.0.1,localhost,fast.qianxing.pro,www.lmyanyu.com"
+{{- else }}
+# Linux (hpcore): EasyTier + LAN segments bypass proxy
+export no_proxy="127.0.0.1,localhost,10.126.126.2,192.168.0.0/16,100.64.0.0/10,10.0.0.0/8"
+{{- end }}
 export NO_PROXY="$no_proxy"
-export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # >>> grok installer >>>
 export PATH="$HOME/.grok/bin:$PATH"
 # <<< grok installer <<<
+
+{{ if eq .chezmoi.hostname "hpcore" -}}
+# ===== hpcore 运维核心专用 =====
+# 开启 sudo 免密 (NOPASSWD: ALL)
+function sudoon() {
+    local file="/etc/sudoers.d/90-nopasswd-${USER}"
+    local tmp
+    tmp="$(mktemp /tmp/sudo-nopasswd.XXXXXX)" || return 1
+    printf '%s ALL=(ALL) NOPASSWD: ALL\n' "$USER" >| "$tmp"
+    # 先做语法校验，避免写坏 sudoers 导致 sudo 全部失效
+    if ! sudo visudo -cf "$tmp" >/dev/null 2>&1; then
+        rm -f "$tmp"
+        echo "❌ sudoers 语法校验失败，已中止，未做任何修改"
+        return 1
+    fi
+    if sudo install -m 0440 -o root -g root "$tmp" "$file"; then
+        echo "✅ sudo 免密已开启：${file}"
+    else
+        echo "❌ 写入 ${file} 失败"
+    fi
+    rm -f "$tmp"
+}
+
+# 关闭 sudo 免密
+function sudooff() {
+    local file="/etc/sudoers.d/90-nopasswd-${USER}"
+    if sudo test -f "$file"; then
+        sudo rm -f "$file"
+        echo "🔴 sudo 免密已关闭"
+    else
+        echo "ℹ️   sudo 免密本来就是关闭状态"
+    fi
+}
+
+# 查看 sudo 免密状态
+function sudostatus() {
+    local file="/etc/sudoers.d/90-nopasswd-${USER}"
+    if sudo test -f "$file"; then
+        echo "🟢 sudo 免密：已开启 (${file})"
+    else
+        echo "⚪ sudo 免密：未开启"
+    fi
+}
+
+# pi 安装位置
+export PATH="$HOME/.npm-global/bin:$PATH"
+
+# Auto-enable mihomo proxy when unset (direct outbound is blocked on this host)
+[[ -z "$http_proxy" && -z "$https_proxy" ]] && proxyon >/dev/null 2>&1
+{{- end }}
 
 export EDITOR=nvim
