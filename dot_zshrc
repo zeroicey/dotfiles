@@ -244,7 +244,9 @@ fi
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 
 # Bypass proxy for Tailscale (fix Codex 502 with Clash)
-export no_proxy="100.103.89.5,100.64.0.0/10,127.0.0.1,localhost"
+# qianxing/lmyanyu relay go direct; only fengshao goes through proxy
+# (NO_PROXY = hosts that bypass the proxy)
+export no_proxy="100.103.89.5,100.64.0.0/10,127.0.0.1,localhost,fast.qianxing.pro,www.lmyanyu.com"
 export NO_PROXY="$no_proxy"
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 

@@ -1,0 +1,12 @@
+[user]
+	name = zeroicey
+	email = zeroicey.hp@outlook.com
+{{ if eq .chezmoi.hostname "hpcore" }}
+# hpcore 特有：GitHub 认证走 gh auth
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+{{ end }}

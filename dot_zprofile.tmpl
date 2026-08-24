@@ -1,0 +1,12 @@
+{{ if eq .chezmoi.os "darwin" -}}
+eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+
+
+# Added by Toolbox App
+export PATH="$PATH:/Users/zeroicey/Library/Application Support/JetBrains/Toolbox/scripts"
+
+
+# Java 21 (Homebrew OpenJDK)
+export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+export PATH="$JAVA_HOME/bin:$PATH"
+{{- end }}
