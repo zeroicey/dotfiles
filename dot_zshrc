@@ -129,9 +129,15 @@ alias l='eza -lah'
 
 # 开启终端代理
 function proxyon() {
-    export https_proxy=http://127.0.0.1:7897
-    export http_proxy=http://127.0.0.1:7897
-    export all_proxy=socks5://127.0.0.1:7897
+    # 平台自适应：hpcore(Linux/mihomo)=7890；macOS=7897
+    local port=7890
+    [[ "$(uname)" == "Darwin" ]] && port=7897
+    local bypass="localhost,127.0.0.1,::1,hpcore,hpcore.localdomain,.local,.localdomain,.ts.net,192.168.5.3,100.103.89.5,10.126.126.2,192.168.0.0/16,100.64.0.0/10,10.0.0.0/8,fd7a:115c:a1e0::/48"
+    export https_proxy=http://127.0.0.1:$port
+    export http_proxy=http://127.0.0.1:$port
+    export all_proxy=socks5://127.0.0.1:$port
+    export NO_PROXY="$bypass"
+    export no_proxy="$bypass"
     echo -e "System proxy enable 🟢"
 }
 
@@ -140,6 +146,8 @@ function proxyoff() {
     unset https_proxy
     unset http_proxy
     unset all_proxy
+    unset NO_PROXY
+    unset no_proxy
     echo -e "System proxy disable 🔴"
 }
 
