@@ -1,6 +1,15 @@
 [user]
 	name = zeroicey
 	email = zeroicey.hp@outlook.com
+[safe]
+	directory = *
+{{ if eq .chezmoi.hostname "hpstation" }}
+# hpstation 特有：GitHub 需走本地代理（mihomo/Clash 混合端口 7897）
+[http]
+	proxy = http://127.0.0.1:7897
+[https]
+	proxy = http://127.0.0.1:7897
+{{ end }}
 {{ if eq .chezmoi.hostname "hpcore" }}
 # hpcore 特有：GitHub 认证走 gh auth
 [credential "https://github.com"]
