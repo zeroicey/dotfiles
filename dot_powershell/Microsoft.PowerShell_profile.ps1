@@ -45,7 +45,9 @@ Set-ListAliases
 # --- cd -> zoxide（缺失则跳过）---
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
     Invoke-Expression (& { (zoxide init powershell | Out-String) })
-    Set-Alias -Name cd -Value z -Scope Global
+    # cd 是 PowerShell 内置 AllScope 别名，不能直接覆盖；用 Remove-Item 后再绑定
+    Remove-Item Alias:cd -Force -ErrorAction SilentlyContinue
+    Set-Alias -Name cd -Value z -Scope Global -Option None
 }
 
 # --- 终端代理开关（对应 Linux 侧 proxyon/proxyoff；mihomo 127.0.0.1:7890）---
