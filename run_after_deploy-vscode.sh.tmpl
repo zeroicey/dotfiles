@@ -1,0 +1,27 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+# 将 chezmoi 管理的 VSCode 配置（~/.config/vscode/）同步到本机 VSCode User 目录。
+# macOS 读 $HOME/Library/Application Support/Code/User，Linux 读 $HOME/.config/Code/User。
+set -e
+
+SRC="$HOME/.config/vscode"
+
+case "{{ .chezmoi.os }}" in
+  darwin) DST="$HOME/Library/Application Support/Code/User" ;;
+  linux)  DST="$HOME/.config/Code/User" ;;
+  *)      exit 0 ;;
+esac
+
+if [ ! -d "$SRC" ]; then
+  echo "[dotfiles] vscode 源目录不存在: $SRC"
+  exit 0
+fi
+
+mkdir -p "$DST"
+for f in settings.json keybindings.json; do
+  if [ -f "$SRC/$f" ]; then
+    cp -f "$SRC/$f" "$DST/$f"
+    echo "[dotfiles] vscode: $f -> $DST"
+  fi
+done
+{{- end -}}

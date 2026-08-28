@@ -1,0 +1,321 @@
+{
+  // ============================================================
+  //  Editor
+  // ============================================================
+  "editor.minimap.enabled": false,
+  "editor.fontFamily": "Cascadia Code, Consolas, 'Courier New'",
+  "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss19', 'ss20', 'calt'",
+  "editor.linkedEditing": true,
+  "breadcrumbs.enabled": false,
+  // ============================================================
+  //  Workbench — Appearance & Layout
+  // ============================================================
+  "workbench.colorTheme": "Catppuccin Macchiato",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.editor.showTabs": "single",
+  "workbench.startupEditor": "none",
+  "workbench.activityBar.location": "bottom",
+  "workbench.panel.showLabels": false,
+  "workbench.tips.enabled": false,
+  "workbench.tree.enableStickyScroll": false,
+  "workbench.tree.renderIndentGuides": "none",
+  "workbench.tree.indent": 8,
+  "window.titleBarStyle": "custom",
+  "window.customTitleBarVisibility": "windowed",
+  // ============================================================
+  //  Explorer
+  // ============================================================
+  "explorer.compactFolders": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmDelete": false,
+  "explorer.decorations.badges": false,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.js",
+    "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+    "*.jsx": "${capture}.js",
+    "*.tsx": "${capture}.ts",
+    "tsconfig.json": "tsconfig.*.json",
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock",
+    "Cargo.toml": "Cargo.lock",
+    "*.sqlite": "${capture}.${extname}-*",
+    "*.db": "${capture}.${extname}-*",
+    "*.sqlite3": "${capture}.${extname}-*",
+    "*.db3": "${capture}.${extname}-*",
+    "*.sdb": "${capture}.${extname}-*",
+    "*.s3db": "${capture}.${extname}-*"
+  },
+  // ============================================================
+  //  Git
+  // ============================================================
+  "git.decorations.enabled": false,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "git.openRepositoryInParentFolders": "always",
+  // ============================================================
+  //  Terminal
+  // ============================================================
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  // ============================================================
+  //  Language-specific — Formatters
+  // ============================================================
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "[dockercompose]": {
+    "editor.defaultFormatter": "docker.docker"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "cweijan.vscode-postgresql-client2"
+  },
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java"
+  },
+  // ============================================================
+  //  Language-specific — Behavior
+  // ============================================================
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.experimental.useTsgo": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "python.analysis.typeCheckingMode": "basic",
+  // ============================================================
+  //  Vim
+  // ============================================================
+  "vim.useSystemClipboard": true,
+  "vim.easymotion": true,
+  "vim.foldfix": true,
+  "vim.leader": "<space>",
+  "vim.useCtrlKeys": true,
+  "vim.hlsearch": true,
+  "vim.insertModeKeyBindings": [
+    {
+      "before": [
+        "j",
+        "j"
+      ],
+      "after": [
+        "<Esc>"
+      ]
+    }
+  ],
+  "vim.visualModeKeyBindings": [
+    {
+      "before": [
+        ">"
+      ],
+      "commands": [
+        "editor.action.indentLines"
+      ]
+    },
+    {
+      "before": [
+        "<"
+      ],
+      "commands": [
+        "editor.action.outdentLines"
+      ]
+    }
+  ],
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": [
+        "J"
+      ],
+      "after": [
+        "5",
+        "j"
+      ]
+    },
+    {
+      "before": [
+        "K"
+      ],
+      "after": [
+        "5",
+        "k"
+      ]
+    },
+    {
+      "before": [
+        "H"
+      ],
+      "after": [
+        "^"
+      ]
+    },
+    {
+      "before": [
+        "L"
+      ],
+      "after": [
+        "$"
+      ]
+    },
+    {
+      "before": [
+        ",",
+        "q"
+      ],
+      "commands": [
+        "workbench.action.closeActiveEditor"
+      ]
+    },
+    {
+      "before": [
+        ",",
+        "w"
+      ],
+      "commands": [
+        "editor.action.formatDocument",
+        "workbench.action.files.save"
+      ]
+    },
+    {
+      "before": [
+        "g",
+        "h"
+      ],
+      "commands": [
+        "editor.action.showHover"
+      ]
+    },
+    {
+      "before": [
+        "leader",
+        "c",
+        "a"
+      ],
+      "commands": [
+        "editor.action.quickFix"
+      ]
+    },
+    {
+      "before": [
+        "leader",
+        "h"
+      ],
+      "commands": [
+        ":bp"
+      ]
+    },
+    {
+      "before": [
+        "leader",
+        "l"
+      ],
+      "commands": [
+        ":bn"
+      ]
+    }
+  ],
+  "vim.visualModeKeyBindingsNonRecursive": [
+    {
+      "before": [
+        "J"
+      ],
+      "after": [
+        "5",
+        "j"
+      ]
+    },
+    {
+      "before": [
+        "K"
+      ],
+      "after": [
+        "5",
+        "k"
+      ]
+    },
+    {
+      "before": [
+        "H"
+      ],
+      "after": [
+        "g",
+        "^"
+      ]
+    },
+    {
+      "before": [
+        "L"
+      ],
+      "after": [
+        "g",
+        "_"
+      ]
+    }
+  ],
+  // ============================================================
+  //  Remote / SSH
+  // ============================================================
+  "remote.SSH.remotePlatform": {
+    "124.71.26.196": "linux",
+    "8.148.233.134": "linux",
+    "10.126.126.2": "linux",
+    "hpnas": "linux",
+    "hphack": "linux",
+    "hpwork": "linux",
+    "hpcore": "linux",
+    "iqibdl": "linux"
+  },
+  // ============================================================
+  //  Extensions
+  // ============================================================
+  "extensions.ignoreRecommendations": true,
+  "todohighlight.isEnable": true,
+  "cmake.showNotAllDocumentsSavedQuestion": false,
+  "database-client.autoSync": true,
+  "zig.zls.enabled": "on",
+  "claudeCode.preferredLocation": "panel",
+  "claudeCode.allowDangerouslySkipPermissions": true,
+  // ============================================================
+  //  Network / Proxy
+  // ============================================================
+  "http.proxy": "http://127.0.0.1:7897",
+  // ============================================================
+  //  Telemetry
+  // ============================================================
+  "redhat.telemetry.enabled": false,
+  "jdk.telemetry.enabled": false,
+  // ============================================================
+  //  Misc
+  // ============================================================
+  "chat.disableAIFeatures": true,
+  "workbench.preferredHighContrastColorTheme": "Catppuccin Macchiato",
+  "go.toolsManagement.autoUpdate": true,
+  "todo-tree.ripgrep.ripgrep": "/opt/homebrew/bin/rg",
+  "workbench.statusBar.visible": false,
+  "editor.accessibilitySupport": "off",
+{{ if eq .chezmoi.os "darwin" -}}
+  "dart.flutterSdkPath": "/Users/zeroicey/workspace/environment/flutter",
+{{- end }}
+  "dart.flutterCreatePlatforms": [
+    "android",
+    "ios"
+  ],
+  "workbench.browser.openLocalhostLinks": false
+}

@@ -14,6 +14,7 @@ Managed with [chezmoi](https://www.chezmoi.io/).
 | `dot_zimrc` | [Zim](https://github.com/zimfw/zimfw) | Shell modules — completions, syntax highlighting |
 | `dot_fzf.zsh` | [fzf](https://github.com/junegunn/fzf) | Fuzzy finder config |
 | `dot_powershell/Microsoft.PowerShell_profile.ps1` | PowerShell | Windows 专用；仅 Windows 生效（`.chezmoiignore` 按 OS 过滤），由 `run_onchange_install-pwsh-profile.ps1.tmpl` 同步到 `$PROFILE` |
+| `dot_config/vscode/` | VS Code | settings/keybindings/extensions 跨平台；由 `run_after_deploy-vscode.{sh,ps1}.tmpl` 同步到各平台 User 目录 |
 
 ## 跨平台模型（2026-08-24 起）
 
@@ -27,7 +28,7 @@ Managed with [chezmoi](https://www.chezmoi.io/).
 
 ## Windows 同步（2026-08-25 起）
 
-Windows 只保留 **Neovim + git 全局配置 + PowerShell profile**，zsh/tmux/ghostty/yazi/herdr 由 `.chezmoiignore` 按 OS 过滤，不会在 Windows 落地。
+Windows 只保留 **Neovim + git 全局配置 + PowerShell profile + VS Code 配置**，zsh/tmux/ghostty/yazi/herdr 由 `.chezmoiignore` 按 OS 过滤，不会在 Windows 落地。VS Code 配置以 `~/.config/vscode/` 为事实源，`run_after_deploy-vscode.ps1.tmpl` 复制到 `%APPDATA%\Code\User`。
 
 **前置**：先装 chezmoi、Git、Neovim：
 

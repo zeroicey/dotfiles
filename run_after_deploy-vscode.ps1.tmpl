@@ -1,0 +1,21 @@
+{{- if eq .chezmoi.os "windows" -}}
+# 将 chezmoi 管理的 VSCode 配置（~/.config/vscode/）同步到 %APPDATA%\Code\User。
+# chezmoi 不自动映射 Windows 特殊目录（AppData），故用 run_after 脚本复制。
+$src = Join-Path $HOME '.config\vscode'
+$dst = Join-Path $env:APPDATA 'Code\User'
+
+if (-not (Test-Path $src)) {
+    Write-Host "[dotfiles] vscode 源目录不存在: $src" -ForegroundColor Yellow
+    exit 0
+}
+
+New-Item -ItemType Directory -Force -Path $dst | Out-Null
+
+foreach ($f in @('settings.json', 'keybindings.json')) {
+    $s = Join-Path $src $f
+    if (Test-Path $s) {
+        Copy-Item -Path $s -Destination (Join-Path $dst $f) -Force
+        Write-Host "[dotfiles] vscode: $f -> $dst" -ForegroundColor Green
+    }
+}
+{{- end -}}
