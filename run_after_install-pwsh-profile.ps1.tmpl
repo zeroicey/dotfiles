@@ -1,6 +1,6 @@
 {{- if eq .chezmoi.os "windows" -}}
 # 将 chezmoi 管理的 profile 副本同步到 $PROFILE（仅在 Windows 上运行）
-# chezmoi 不自动映射 Windows 特殊目录，故用 run_onchange 脚本安装。
+# chezmoi 不自动映射 Windows 特殊目录，故用 run_after 脚本每次 apply 时安装。
 $src = Join-Path $HOME '.powershell\Microsoft.PowerShell_profile.ps1'
 $dst = $PROFILE
 

@@ -29,12 +29,12 @@ Set-EditorsAliases
 # --- ls / ll / l -> eza（缺失则退回 Get-ChildItem 包装）---
 function Set-ListAliases {
     if (Get-Command eza -ErrorAction SilentlyContinue) {
-        function List-Aliased { eza -lah --icons $args }
-        function List-Aliased-Short { eza -lah --icons $args }
+        function global:List-Aliased { eza -lah --icons $args }
+        function global:List-Aliased-Short { eza -lah --icons $args }
     }
     else {
-        function List-Aliased { Get-ChildItem -Force $args }
-        function List-Aliased-Short { Get-ChildItem -Force $args }
+        function global:List-Aliased { Get-ChildItem -Force $args }
+        function global:List-Aliased-Short { Get-ChildItem -Force $args }
     }
     Set-Alias -Name ls -Value List-Aliased-Short -Scope Global
     Set-Alias -Name ll -Value List-Aliased -Scope Global

@@ -13,7 +13,7 @@ Managed with [chezmoi](https://www.chezmoi.io/).
 | `dot_zshrc` | Zsh | Zimfw, aliases, zoxide, fzf, proxy helpers |
 | `dot_zimrc` | [Zim](https://github.com/zimfw/zimfw) | Shell modules — completions, syntax highlighting |
 | `dot_fzf.zsh` | [fzf](https://github.com/junegunn/fzf) | Fuzzy finder config |
-| `dot_powershell/Microsoft.PowerShell_profile.ps1` | PowerShell | Windows 专用；仅 Windows 生效（`.chezmoiignore` 按 OS 过滤），由 `run_onchange_install-pwsh-profile.ps1.tmpl` 同步到 `$PROFILE` |
+| `dot_powershell/Microsoft.PowerShell_profile.ps1` | PowerShell | Windows 专用；仅 Windows 生效（`.chezmoiignore` 按 OS 过滤），由 `run_after_install-pwsh-profile.ps1.tmpl` 同步到 `$PROFILE` |
 | `dot_config/vscode/` | VS Code | settings/keybindings/extensions 跨平台；由 `run_after_deploy-vscode.{sh,ps1}.tmpl` 同步到各平台 User 目录 |
 
 ## 跨平台模型（2026-08-24 起）
@@ -56,7 +56,7 @@ chezmoi init zeroicey
 chezmoi apply --force
 ```
 
-首次 apply 会自动执行 `run_onchange_install-pwsh-profile.ps1.tmpl`，把 PowerShell profile 装到 `$PROFILE`。
+每次 apply 会自动执行 `run_after_install-pwsh-profile.ps1.tmpl`，把 PowerShell profile 装到 `$PROFILE`。
 
 **验证**：`nvim` 启动应显示 NvChad UI（onedark 主题）且插件能装；`git config --global user.name` / `user.email` 生效；`Get-Content $PROFILE` 内容已更新。
 
