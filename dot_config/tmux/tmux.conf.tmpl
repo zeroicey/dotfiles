@@ -1,32 +1,46 @@
-set -g default-terminal "tmux-256color"
-set -ga terminal-overrides ",*:RGB"
-set -g mouse on
-set -g set-clipboard on
+# -*- mode: tmux; -*-
+# tmux.conf — 跨端统一（chezmoi 模板）
+#   前缀 M-w ｜ tpm + floax（Alt+p 悬浮窗）
+#   状态栏手写、简洁配色（无主题插件、无图标、直角）
+# 常用：M-w r 重载｜M-w I 装插件｜M-w U 升插件｜M-p 悬浮窗
 
+# ============================ 基础 ============================
+set -g default-terminal "tmux-256color"
+set -ag terminal-overrides ",*:Tc"          # 24bit 真彩色
 {{- $zsh := lookPath "zsh" -}}
 {{- if $zsh }}
 set -g default-shell "{{ $zsh }}"
 {{- end }}
 
-# Start windows and panes at 1, not 0
+set -g mouse on
+set -g set-clipboard on
 set -g base-index 1
 set -g pane-base-index 1
-set-window-option -g pane-base-index 1
-set-option -g renumber-windows on
+set -g renumber-windows on
+set -g history-limit 50000
+set -g display-time 4000
 
-# Keybinds
+set -s escape-time 10                        # M- 组合键响应
+set -g focus-events on
+set -g status-interval 5                     # 时钟刷新
+
+# ============================ 前缀 ============================
 unbind C-b
 set -g prefix M-w
 set -g prefix2 None
 bind M-w send-prefix
 
-# Reload config
-unbind r
-bind r source-file $HOME/.config/tmux/tmux.conf
+# ============================ 窗口 / 会话 ============================
+# 新建窗口（M-w o）/ 新建会话（M-w N）
+unbind c
+bind o new-window -c "#{pane_current_path}"                  # 新建窗口，继承当前目录
+bind N command-prompt -p "new session: " "new-session -s '%%'"   # 新建会话（提示输入名字）
 
-# Alt+1..8 to switch windows, Alt+9/0 to switch sessions
-unbind -n M-9
-unbind -n M-0
+# 重命名窗口（M-w ,）/ 重命名会话（M-w $）——沿用 tmux 标准键
+bind , command-prompt -I "#W" "rename-window '%%'"           # 重命名窗口
+bind $ command-prompt -I "#S" "rename-session '%%'"          # 重命名会话
+
+# Alt+1~8 切窗口，Alt+9/0 切会话
 bind -n M-1 select-window -t 1
 bind -n M-2 select-window -t 2
 bind -n M-3 select-window -t 3
@@ -38,68 +52,82 @@ bind -n M-8 select-window -t 8
 bind -n M-9 switch-client -p
 bind -n M-0 switch-client -n
 
-# Prefix+h/l to switch windows
-# Prefix+(/) to switch sessions
-# Prefix+o to create new window
-unbind j
-unbind k
+# 前缀 h/l 前后窗口；Alt+,/. 前后窗口（无需前缀）；(/) 前后会话
 bind h previous-window
 bind l next-window
+bind -n M-, previous-window
+bind -n M-. next-window
+# 会话/窗口树
+bind s choose-tree -Zs
+bind w choose-tree -Zw
 bind ( switch-client -p
 bind ) switch-client -n
-bind o new-window
 
-# Vim like pane selection
-bind -n M-h select-pane -L
-bind -n M-j select-pane -D
-bind -n M-k select-pane -U
-bind -n M-l select-pane -R
-
-# Vim-like copy/paste
-set-window-option -g mode-keys vi
-bind-key -T copy-mode-vi v send-keys -X begin-selection
-bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
-bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
-unbind -T copy-mode-vi MouseDragEnd1Pane
-
-# Bind Alt-q to kill pane
-bind -n M-q kill-pane
-
-# Split window
+# ============================ 分屏 ============================
 unbind %
 unbind '"'
 bind \\ split-window -h -c "#{pane_current_path}"
 bind - split-window -v -c "#{pane_current_path}"
+bind z resize-pane -Z                            # 缩放当前 pane
 
-# Toggle zoom for the current pane
-unbind z
-bind z resize-pane -Z
+# ============================ Pane 移动 / 缩放 ============================
+bind -n M-h select-pane -L
+bind -n M-j select-pane -D
+bind -n M-k select-pane -U
+bind -n M-l select-pane -R
+bind -n M-Left  select-pane -L
+bind -n M-Down  select-pane -D
+bind -n M-Up    select-pane -U
+bind -n M-Right select-pane -R
 
-# Catppuccin
-set -g @catppuccin_flavor 'frappe'
-run ~/.config/tmux/plugins/tmux/catppuccin.tmux
-# Show all sessions on the pane top border while keeping the main status bar at the bottom.
-set -g pane-border-status top
-set -g pane-border-lines spaces
-set -g pane-border-format '#{S:#[fg=#{@thm_overlay_0}]#[bg=#{@thm_surface_0}] #S #[default],#[fg=#{@thm_crust}]#[bg=#{@thm_lavender}]#[bold] #S #[nobold]#[default]}'
-# Make the status line more pleasant.
-set -g status-left ""
-set -g status-right ""
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
 
-# Ensure that everything on the right side of the status line
-# is included.
-set -g status-right-length 100
+# ============================ 复制模式（vi）============================
+set -g mode-keys vi
+set -g status-keys vi
+bind -T copy-mode-vi v send-keys -X begin-selection
+bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
+bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+bind -T copy-mode-vi Escape send-keys -X clear-selection
+unbind -T copy-mode-vi MouseDragEnd1Pane
 
+# ============================ 杂项键位 ============================
+bind -n M-q kill-pane                            # Alt+q 杀当前 pane
+bind r source-file $HOME/.config/tmux/tmux.conf \; display "tmux.conf reloaded"
 
+# ============================ 外观（手写，简洁）============================
+# 配色：一个蓝色强调 + 灰阶，纯文字、直角、无图标
+#   底 #1e1e2e  前景 #cdd6f4  次级 #a6adc8  高亮块 #45475a  强调蓝 #89b4fa
+
+set -g status-position bottom
+set -g status-style "bg=#1e1e2e,fg=#cdd6f4"
+
+set -g status-left "#[fg=#1e1e2e,bg=#89b4fa,bold] #S #[bg=#1e1e2e] "
+set -g status-left-length 40
+
+set -g status-right "#[fg=#a6adc8]#H · #{b:pane_current_path} · %m-%d %H:%M "
+set -g status-right-length 120
+
+setw -g window-status-format "#[fg=#a6adc8,bg=#1e1e2e] #I:#W "
+setw -g window-status-current-format "#[fg=#cdd6f4,bg=#45475a,bold] #I:#W #[bg=#1e1e2e] "
+setw -g window-status-separator ""
+
+set -g pane-active-border-style "fg=#89b4fa"
+set -g pane-border-style "fg=#45475a"
+set -g message-style "bg=#45475a,fg=#cdd6f4"
+set -g mode-style "bg=#45475a,fg=#cdd6f4"
+
+# ============================ 插件（tpm）============================
 set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'catppuccin/tmux#v2.1.3'
 set -g @plugin 'omerxx/tmux-floax'
-set -g @floax-bind '-n M-p'
-set -g @plugin 'rickstaa/tmux-notify'
-set -g @plugin 'tmux-plugins/tmux-yank'
-set -g @override_copy_command 'tmux-osc52-copy'
 
-# Auto-install tpm if not present
+# floax：Alt+p 把当前窗格弹成悬浮窗
+set -g @floax-bind '-n M-p'
+
+# 首次运行自动装 tpm
 if "test ! -d ~/.config/tmux/plugins/tpm" \
    "run 'mkdir -p ~/.config/tmux/plugins && git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm'"
 
