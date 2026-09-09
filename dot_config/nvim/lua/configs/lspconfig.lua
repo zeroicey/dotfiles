@@ -9,6 +9,7 @@ local servers = {
   "volar",      -- Vue 3 (.vue)
   "tailwindcss", -- Tailwind CSS（需项目含 tailwind.config.*）
   "emmet_ls",   -- HTML/CSS Emmet 缩写补全
+  "gopls",      -- Go
 }
 vim.lsp.enable(servers)
 

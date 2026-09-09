@@ -2,6 +2,7 @@ local options = {
   formatters_by_ft = {
     lua = { "stylua" },
     rust = { "rustfmt" },
+    go = { "gofmt" },
     -- Web 前端（prettierd 由 mason 安装）
     javascript = { "prettierd" },
     javascriptreact = { "prettierd" },

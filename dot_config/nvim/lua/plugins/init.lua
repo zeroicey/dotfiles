@@ -43,6 +43,7 @@ return {
         "scss",
         "vue",
         "json",
+        "go",
       })
     end,
   },
@@ -69,6 +70,7 @@ return {
         -- 基础
         "stylua",
         "lua-language-server",
+        "gopls",
       },
       auto_update = false,
       run_on_start = true,
