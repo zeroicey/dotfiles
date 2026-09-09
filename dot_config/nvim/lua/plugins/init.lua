@@ -49,9 +49,11 @@ return {
 
   -- ============ Web 开发 ============
 
-  -- 跨机器自动安装 LSP / 格式化器：首次打开 :Mason 时自动补齐缺失包
+  -- 跨机器自动安装 LSP / 格式化器（mason-tool-installer 在启动时补齐 ensure_installed 缺失包）
   {
-    "mason-org/mason.nvim",
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    dependencies = { "mason-org/mason.nvim" },
+    event = "VeryLazy",
     opts = {
       ensure_installed = {
         -- Web 语言服务器
@@ -68,6 +70,8 @@ return {
         "stylua",
         "lua-language-server",
       },
+      auto_update = false,
+      run_on_start = true,
     },
   },
 
