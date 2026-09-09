@@ -29,12 +29,60 @@ return {
     end,
   },
 
-  -- 补 Rust treesitter 解析器（NvChad 默认只装 lua/vim 等）
+  -- 补 treesitter 解析器（NvChad 默认只装 lua/vim 等）：rust + web 全栈
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed or {}, { "rust" })
+      vim.list_extend(opts.ensure_installed or {}, {
+        "rust",
+        "javascript",
+        "typescript",
+        "tsx",
+        "html",
+        "css",
+        "scss",
+        "vue",
+        "json",
+      })
     end,
+  },
+
+  -- ============ Web 开发 ============
+
+  -- 跨机器自动安装 LSP / 格式化器：首次打开 :Mason 时自动补齐缺失包
+  {
+    "mason-org/mason.nvim",
+    opts = {
+      ensure_installed = {
+        -- Web 语言服务器
+        "html-lsp",
+        "css-lsp",
+        "json-lsp",
+        "vtsls",
+        "vue-language-server",
+        "tailwindcss-language-server",
+        "emmet-ls",
+        -- 格式化器
+        "prettierd",
+        -- 基础
+        "stylua",
+        "lua-language-server",
+      },
+    },
+  },
+
+  -- 自动闭合 / 同步重命名 HTML / JSX / Vue 标签
+  {
+    "windwp/nvim-ts-autotag",
+    event = "VeryLazy",
+    opts = {},
+  },
+
+  -- 上下文感知注释切换（gc/gcc，支持 JSX/TSX/Vue 的 {/* */} 与 <!-- -->）
+  {
+    "folke/ts-comments.nvim",
+    event = "VeryLazy",
+    opts = {},
   },
 
   -- test new blink
