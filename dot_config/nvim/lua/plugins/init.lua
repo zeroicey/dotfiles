@@ -44,6 +44,8 @@ return {
         "vue",
         "json",
         "go",
+        "markdown",
+        "markdown_inline",
       })
     end,
   },
