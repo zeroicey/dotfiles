@@ -5,50 +5,42 @@ require "nvchad.autocmds"
 -- 如果这门语言没有 highlights query（parser 未装 / query 未装），结果就是「一点颜色都没有」
 -- —— 这正是 Python 白字的成因。所以只在 query 真实存在时才让 ts 接管，
 -- 否则停掉高亮器并把正则语法高亮接回来（兜底所有没装 parser 的 filetype）。
-vim.api.nvim_create_autocmd("FileType", {
-  callback = function(args)
-    local buf, ft = args.buf, vim.bo[args.buf].filetype
-    if ft == "" then
-      return
-    end
+local function ts_or_syntax(buf)
+  local ft = vim.bo[buf].filetype
+  if ft == "" then
+    return
+  end
 
-    local lang = vim.treesitter.language.get_lang(ft) or ft
-    local has_query = pcall(vim.treesitter.language.add, lang)
-      and vim.treesitter.query.get(lang, "highlights") ~= nil
+  local lang = vim.treesitter.language.get_lang(ft) or ft
+  local has_query = pcall(vim.treesitter.language.add, lang)
+    and vim.treesitter.query.get(lang, "highlights") ~= nil
 
-    if not has_query then
-      pcall(vim.treesitter.stop, buf)
-      pcall(vim.cmd, "syntax on")
-      if vim.b[buf].current_syntax == nil then
-        pcall(function()
-          vim.bo[buf].syntax = ft
-        end)
-      end
-    end
-  end,
-})
-
--- auto-open file tree when nvim is launched with a directory argument
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    local args = vim.fn.argv()
-    if #args > 0 and vim.fn.isdirectory(args[1]) == 1 then
-      vim.schedule(function()
-        require("nvim-tree.api").tree.open()
+  if has_query then
+    -- 已存在的高亮器可能是「空 query」那个（NvChad 无条件 start 的结果），重建一次
+    pcall(vim.treesitter.stop, buf)
+    pcall(vim.treesitter.start, buf, lang)
+  else
+    pcall(vim.treesitter.stop, buf)
+    pcall(vim.cmd, "syntax on")
+    if vim.b[buf].current_syntax == nil then
+      pcall(function()
+        vim.bo[buf].syntax = ft
       end)
     end
+  end
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function(args)
+    ts_or_syntax(args.buf)
   end,
 })
 
--- auto-reload files changed on disk (e.g. by external AI tools)
-vim.o.autoread = true
-vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+-- 启动时打开的文件，其 FileType 早于 lazy 载入插件/rtp；NvChad 在 VimEnter 后发 User FilePost，
+-- 在这里再兜一次（此时 queries 已在 runtimepath 里）
+vim.api.nvim_create_autocmd("User", {
+  pattern = "FilePost",
   callback = function()
-    pcall(vim.cmd.checktime)
+    ts_or_syntax(vim.api.nvim_get_current_buf())
   end,
 })
-
-local check_timer = vim.uv.new_timer()
-check_timer:start(1000, 1500, vim.schedule_wrap(function()
-  pcall(vim.cmd.checktime)
-end))

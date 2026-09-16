@@ -97,6 +97,16 @@ return {
       opts.ensure_installed = vim.list_extend(opts.ensure_installed or {}, ts_langs)
     end,
     config = function()
+      -- iqibdl 出网走公共 WiFi、直连 GitHub 不通：parser 源码拉不下来（安装器反而会把
+      -- 同步进去的 site/queries 清掉）。所以这台机器不联网安装，直接消费
+      -- 「从 hpcore 同步来的 site/parser/*.so」+「插件自带的 runtime/queries」。
+      if vim.uv.os_gethostname() == "iqibdl" then
+        local plugin = vim.fn.stdpath "data" .. "/lazy/nvim-treesitter"
+        if vim.uv.fs_stat(plugin .. "/runtime/queries") then
+          vim.opt.rtp:prepend(plugin .. "/runtime")
+        end
+        return
+      end
       require("nvim-treesitter").install(ts_langs)
     end,
   },
