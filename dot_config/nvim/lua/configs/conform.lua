@@ -16,6 +16,8 @@ local options = {
     jsonc = { "prettierd" },
     yaml = { "prettierd" },
     markdown = { "prettierd" },
+    -- Python：ruff 一肩挑（lint 修复 + import 排序 + 格式化），black/isort 不再需要
+    python = { "ruff_fix", "ruff_format" },
   },
 
   format_on_save = {

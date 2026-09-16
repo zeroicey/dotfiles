@@ -19,3 +19,10 @@
 	helper =
 	helper = !/usr/bin/gh auth git-credential
 {{ end }}
+{{ if eq .chezmoi.hostname "iqibdl" }}
+# iqibdl 特有：挂公共 WiFi，直连 GitHub 不通 → 所有 github.com 的 git 操作重写成自建 gh 代理
+# （chezmoi update / lazy.nvim 插件 clone / mason registry 全走这里；
+#  mason 的 release 下载另由 nvim 配置里的 download_url_template 重写）
+[url "https://gh.zeroicey.me/https://github.com/"]
+	insteadOf = https://github.com/
+{{ end }}
