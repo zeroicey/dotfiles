@@ -10,3 +10,11 @@ export PATH="$PATH:/Users/zeroicey/Library/Application Support/JetBrains/Toolbox
 export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
 export PATH="$JAVA_HOME/bin:$PATH"
 {{- end }}
+
+# TeX Live 用户态安装（2026-09-16，装到 ~/.texlive/2026，无需 sudo）
+# brew cask 的 mactex 需要 sudo，本机改为 install-tl 用户态安装，故手动补 PATH
+if [ -d "$HOME/.texlive/2026/bin" ]; then
+  _tlbin=$(find "$HOME/.texlive/2026/bin" -maxdepth 1 -type d -name '*-darwin' 2>/dev/null | head -1)
+  [ -n "$_tlbin" ] && export PATH="$_tlbin:$PATH"
+  unset _tlbin
+fi

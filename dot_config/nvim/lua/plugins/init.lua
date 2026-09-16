@@ -80,6 +80,11 @@ return {
     init = function()
       if vim.fn.has "mac" == 1 then
         vim.g.vimtex_view_method = "skim"
+        -- 用户态 TeX Live（~/.texlive/2026）不在默认 PATH；从 Finder 启动 nvim 时也要能找到 latexmk
+        local tlbin = vim.fn.glob(vim.fn.expand "~/.texlive/*/bin/*-darwin", true)[1]
+        if tlbin then
+          vim.env.PATH = tlbin .. ":" .. vim.env.PATH
+        end
       elseif vim.fn.has "win32" == 1 then
         vim.g.vimtex_view_method = "sumatrapdf"
       else
