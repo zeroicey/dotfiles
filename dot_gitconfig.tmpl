@@ -19,6 +19,12 @@
 	helper =
 	helper = !/usr/bin/gh auth git-credential
 {{ end }}
+{{ if eq .chezmoi.hostname "hpbook" }}
+# hpbook 特有：直连 github.com:443 不通（实测 lazy 插件 checkout 75s 超时）→ 与 iqibdl 同款，
+# 所有 https 的 github.com 操作重写走自建 gh 代理（lazy.nvim 插件 clone 走这条路）
+[url "https://gh.zeroicey.me/https://github.com/"]
+	insteadOf = https://github.com/
+{{ end }}
 {{ if eq .chezmoi.hostname "iqibdl" }}
 # iqibdl 特有：挂公共 WiFi，直连 GitHub 不通 → 所有 github.com 的 git 操作重写成自建 gh 代理
 # （chezmoi update / lazy.nvim 插件 clone / mason registry 全走这里；
