@@ -1,8 +1,10 @@
-font-family = Cascadia Code NF
+font-family = {{ if eq .chezmoi.os "darwin" }}Cascadia Code NF{{ else }}CaskaydiaCove NF{{ end }}
 font-size = 13.5
 font-feature = ss01,ss02,ss03,ss19,ss20,calt
 background-opacity = 0.85
+{{ if eq .chezmoi.os "darwin" -}}
 background-blur = 20
+{{ end -}}
 
 # Cursor style: block, bar, underline, block_hollow
 cursor-style = block
