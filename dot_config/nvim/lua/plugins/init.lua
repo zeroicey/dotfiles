@@ -86,7 +86,12 @@ return {
           vim.env.PATH = tlbin .. ":" .. vim.env.PATH
         end
       elseif vim.fn.has "win32" == 1 then
-        vim.g.vimtex_view_method = "sumatrapdf"
+        -- ️ 这版 vimtex 没有 `sumatrapdf` 这个 view_method（viewer 目录里只有 skim/general/sioyek/zathura…）
+        -- Windows 上 SumatraPDF 走 general viewer + 显式参数：-forward-search 即正向搜索；
+        -- 反向搜索（PDF 双击跳源码）需 SumatraPDF 侧配 InverseSearchCmdLine，见 runbooks/latex.md
+        vim.g.vimtex_view_method = "general"
+        vim.g.vimtex_view_general_viewer = "SumatraPDF"
+        vim.g.vimtex_view_general_options = "-reuse-instance -forward-search @tex @line @pdf"
       else
         vim.g.vimtex_view_method = "general"
       end
