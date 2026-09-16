@@ -16,6 +16,8 @@ local options = {
     jsonc = { "prettierd" },
     yaml = { "prettierd" },
     markdown = { "prettierd" },
+    -- LaTeX：texlab 自带格式化（vimtex 只管编译）
+    tex = { "texlab" },
     -- Python：ruff 一肩挑（lint 修复 + import 排序 + 格式化），black/isort 不再需要
     python = { "ruff_fix", "ruff_format" },
   },

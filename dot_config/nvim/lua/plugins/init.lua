@@ -11,6 +11,8 @@ local ts_langs = {
   -- 配置 / 文档 / 通用
   "markdown",
   "markdown_inline",
+  "latex",
+  "bibtex",
   "bash",
   "toml",
   "yaml",
@@ -66,6 +68,46 @@ return {
         notify_user_on_venv_activation = true,
       },
     },
+  },
+
+  -- === LaTeX（论文） ===
+  -- 分工：vimtex 管编译/预览/导航（mature，6361★，2026-09 仍活跃）；
+  --       texlab（mason 装）管补全/诊断/悬停。零服务器端配置，PDF 用外部查看器。
+  -- 查看器：macOS=Skim、Windows=SumatraPDF（都支持 SyncTeX 正反搜索）；Linux 只装基础，不作预览。
+  {
+    "lervag/vimtex",
+    lazy = false, -- 官方 README 明确：VimTeX 不要 lazy-load
+    init = function()
+      if vim.fn.has "mac" == 1 then
+        vim.g.vimtex_view_method = "skim"
+      elseif vim.fn.has "win32" == 1 then
+        vim.g.vimtex_view_method = "sumatrapdf"
+      else
+        vim.g.vimtex_view_method = "general"
+      end
+      vim.g.vimtex_compiler_method = "latexmk" -- 连续编译：\ll 后保存即刷新 PDF
+      vim.g.vimtex_view_automatic = 1 -- 首次编译自动拉起查看器
+      vim.g.vimtex_quickfix_mode = 0 -- 别每次保存都弹 quickfix
+      vim.g.vimtex_imaps_enabled = 1 -- 数学模式简写（`a → \alpha 等）
+      vim.g.vimtex_mappings_prefix = "<localleader>" -- 默认键仍保留在 \ll 等
+    end,
+    config = function()
+      -- 给论文写作加一组好按的键（NvChad 的 leader = 空格）
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "tex", "plaintex" },
+        callback = function(ev)
+          local function map(lhs, cmd, desc)
+            vim.keymap.set("n", lhs, cmd, { buffer = ev.buf, desc = desc })
+          end
+          map("<leader>ll", "<cmd>VimtexCompile<cr>", "LaTeX: 编译 / 连续编译开关")
+          map("<leader>lk", "<cmd>VimtexStop<cr>", "LaTeX: 停止编译")
+          map("<leader>lv", "<cmd>VimtexView<cr>", "LaTeX: 打开/定位 PDF（正反搜索）")
+          map("<leader>le", "<cmd>VimtexErrors<cr>", "LaTeX: 错误列表")
+          map("<leader>lt", "<cmd>VimtexTocOpen<cr>", "LaTeX: 章节大纲")
+          map("<leader>lc", "<cmd>VimtexClean<cr>", "LaTeX: 清理辅助文件")
+        end,
+      })
+    end,
   },
 
   -- === Rust ===
@@ -150,6 +192,8 @@ return {
         -- Python（uv 项目）
         "basedpyright",
         "ruff",
+        -- LaTeX
+        "texlab",
       },
       auto_update = false,
       run_on_start = true,

@@ -12,6 +12,7 @@ local servers = {
   "gopls",      -- Go
   "basedpyright", -- Python：类型检查 / 补全 / 自动识别项目 .venv（uv 项目同理）
   "ruff",       -- Python：lint + import 排序（格式化交给 conform 的 ruff_format）
+  "texlab",     -- LaTeX：补全 / 诊断 / 悬停 / 格式化
 }
 vim.lsp.enable(servers)
 
@@ -38,3 +39,13 @@ vim.lsp.config("ruff", {
 })
 
 -- read :h vim.lsp.config for changing options of lsp servers 
+
+-- LaTeX：texlab 只做语言服务，构建交给 vimtex 的 latexmk（避免双份构建）
+vim.lsp.config("texlab", {
+  settings = {
+    texlab = {
+      build = { onSave = false },
+      chktex = { onOpenAndSave = true },
+    },
+  },
+})
