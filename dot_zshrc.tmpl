@@ -135,13 +135,27 @@ alias l='eza -lah'
 
 # 开启终端代理
 function proxyon() {
-    # 平台自适应：hpcore(Linux/mihomo)=7890；macOS=7897
-    local port=7890
-    [[ "$(uname)" == "Darwin" ]] && port=7897
-    local bypass="localhost,127.0.0.1,::1,hpcore,hpcore.localdomain,.local,.localdomain,.ts.net,192.168.5.3,100.103.89.5,10.126.126.2,192.168.0.0/16,100.64.0.0/10,10.0.0.0/8,fd7a:115c:a1e0::/48"
-    export https_proxy=http://127.0.0.1:$port
-    export http_proxy=http://127.0.0.1:$port
-    export all_proxy=socks5://127.0.0.1:$port
+    # 平台自适应：hpcore→hpzero 旁路由 7890（带认证，密码不入 git，从 0600 secret 读）；macOS→本机 7897
+    local proxy=""
+    if [[ "$(uname)" == "Darwin" ]]; then
+        proxy="http://127.0.0.1:7897"
+    else
+        local _pf="$HOME/.config/hpcore-secrets/clash-proxy.pass"
+        if [[ -r "$_pf" ]]; then
+            proxy="http://Clash:$(<"$_pf")@192.168.5.10:7890"
+        else
+            echo "proxyon: 缺 $_pf（hpzero 代理密码），未启用代理" >&2
+            return 1
+        fi
+    fi
+    # ⚠️ no_proxy 里禁止出现裸 IPv6 子网：urllib/httpx 按 ':' 切 host:port，会把
+    #    fd7a:115c:a1e0::/48 解析成 host:115c:a1e0:: 进而 httpx.Client() 抛
+    #    InvalidURL: Invalid port（报错在构造阶段，请求根本没发出去）。
+    #    单点回环 ::1 安全；已下线网段（EasyTier 10.126.126.2）也别留。
+    local bypass="localhost,127.0.0.1,::1,hpcore,hpcore.localdomain,.local,.localdomain,.ts.net,192.168.5.3,100.103.89.5,192.168.0.0/16,100.64.0.0/10,10.0.0.0/8"
+    export https_proxy="$proxy"
+    export http_proxy="$proxy"
+    export all_proxy="$proxy"
     export NO_PROXY="$bypass"
     export no_proxy="$bypass"
     echo -e "System proxy enable 🟢"
@@ -263,8 +277,8 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 # qianxing/lmyanyu relay go direct; only fengshao goes through proxy
 export no_proxy="100.103.89.5,100.64.0.0/10,127.0.0.1,localhost,fast.qianxing.pro,www.lmyanyu.com"
 {{- else }}
-# Linux (hpcore): EasyTier + LAN segments bypass proxy
-export no_proxy="127.0.0.1,localhost,10.126.126.2,192.168.0.0/16,100.64.0.0/10,10.0.0.0/8"
+# Linux (hpcore): LAN segments bypass proxy（EasyTier 已下线，相关网段不再保留）
+export no_proxy="127.0.0.1,localhost,192.168.0.0/16,100.64.0.0/10,10.0.0.0/8"
 {{- end }}
 export NO_PROXY="$no_proxy"
 
@@ -318,8 +332,13 @@ function sudostatus() {
 # pi 安装位置
 export PATH="$HOME/.npm-global/bin:$PATH"
 
-# Auto-enable mihomo proxy when unset (direct outbound is blocked on this host)
-[[ -z "$http_proxy" && -z "$https_proxy" ]] && proxyon >/dev/null 2>&1
+# 未设代理时自动开启 → 默认走 hpzero 旁路由（含 AdGuard 过滤）
+# 并自愈「mihomo 下线后残留的 127.0.0.1:7890 死代理」（避免新 shell 继承失效代理）
+if [[ -z "$http_proxy" && -z "$https_proxy" ]]; then
+  proxyon >/dev/null 2>&1
+elif [[ "$http_proxy" == *127.0.0.1:7890* || "$https_proxy" == *127.0.0.1:7890* || "$all_proxy" == *127.0.0.1:7890* ]]; then
+  proxyon >/dev/null 2>&1
+fi
 {{- end }}
 
 export EDITOR=nvim
