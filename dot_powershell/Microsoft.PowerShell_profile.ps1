@@ -5,6 +5,14 @@
 #  跨平台约定：别名/命令映射尽量与 zsh 侧（dot_zshrc）保持一致
 # ============================================================
 
+# --- 编码：强制 UTF-8（修 WezTerm 下中文乱码 / "No fonts contain glyphs" 警告）---
+# 背景：本机 ACP=936(GBK)，pwsh 默认 [Console]::OutputEncoding=gb2312，写出的中文是 GBK
+# 字节，而 WezTerm 只按 UTF-8 解码 -> 乱码，并偶发 wezterm_font "No fonts contain glyphs" 警告。
+# 副作用：控制台代码页被设为 65001，从本会话启动的 cmd 等工具通常会一并继承。
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::InputEncoding  = [System.Text.Encoding]::UTF8
+$OutputEncoding           = [System.Text.Encoding]::UTF8
+
 # --- 加载自检（诊断"profile 没加载"问题）---
 Write-Host "[dotfiles] PowerShell profile loaded @ $($MyInvocation.MyCommand.Path)" -ForegroundColor Green
 
