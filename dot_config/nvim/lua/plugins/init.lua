@@ -203,6 +203,7 @@ return {
         "stylua",
         "lua-language-server",
         "clangd",
+        "clang-format",
         "gopls",
         -- Python（uv 项目）
         "basedpyright",
