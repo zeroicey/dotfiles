@@ -10,6 +10,8 @@ Managed with [chezmoi](https://www.chezmoi.io/).
 | `dot_config/nvim/` | [Neovim](https://neovim.io/) | Lazy.nvim + LSP, Treesitter, Tokyonight, etc. |
 | `dot_config/tmux/` | [tmux](https://github.com/tmux/tmux) | Catppuccin Frappe, vim keybinds, TPM |
 | `dot_config/yazi/` | [yazi](https://github.com/sxyazi/yazi) | File manager — show hidden files |
+| `dot_config/fcitx5/config` | [Fcitx5](https://fcitx-im.org/) | 清空 `AltTriggerKeys`（默认抢走 `Shift_L` 做临时切中英，会覆盖 rime 的 `commit_code`） |
+| `dot_local/share/fcitx5/rime/` | [Rime](https://rime.im/) 雾凇拼音 | `rime_ice.custom.yaml`（整句造句/`,` `.` 翻页/每页 9 个）+ `grammar.yaml` + NixOS 专用的 `default.custom.yaml` |
 | `dot_zshrc` | Zsh | Zimfw, aliases, zoxide, fzf, proxy helpers |
 | `dot_zimrc` | [Zim](https://github.com/zimfw/zimfw) | Shell modules — completions, syntax highlighting |
 | `dot_fzf.zsh` | [fzf](https://github.com/junegunn/fzf) | Fuzzy finder config |
@@ -25,6 +27,26 @@ Managed with [chezmoi](https://www.chezmoi.io/).
 - **AI 合并工作流**：任一机器改配置/加插件 → commit & push 到 GitHub；其他机器 `chezmoi update`（等价 git pull + apply）拉取，平台差异由模板处理，冲突由 AI 解决。
 - **一键重建**：新机器 `chezmoi init --apply` 即还原环境。Windows 需先装 chezmoi、Git、Neovim（见下方「Windows 同步」），macOS 用 brew，Arch 用 pacman。
 - **注意**：chezmoi 不会把源目录名（如 `Documents/`、`AppData/`）自动映射到 Windows 特殊目录；Windows 侧特殊路径一律用 `run_` 脚本处理（见上面 PowerShell 例）。
+
+## fcitx5 / Rime 输入法（2026-09-25 加入，仅 Linux）
+
+| 位置 | 内容 |
+|------|------|
+| `dot_config/fcitx5/config` | **关键修复**：清空 `AltTriggerKeys`。fcitx5 5.1.19 该项默认值就是 `Key("Shift_L")`（上游 `src/lib/fcitx/globalconfig.cpp`），会抢走左 Shift 做「临时切换中英」，在中文组字时按下它会先把输入法切走、顺带上屏**第一个候选**——于是打 `nihao` 按 Shift 得到「你好」而不是 `nihao`，rime 的 `commit_code` 根本没机会执行。 |
+| `dot_local/share/fcitx5/rime/rime_ice.custom.yaml` | 雾凇拼音的用户级 patch：开整句造句、`,`/`.` 翻页、每页 9 个候选、左右 Shift 都 `commit_code`。 |
+| `dot_local/share/fcitx5/rime/grammar.yaml` | 八股文语法模型的上游配置模板（`grammar:/hans`）。 |
+| `dot_local/share/fcitx5/rime/default.custom.yaml` | **NixOS 专用**：nixpkgs 把上游 `default.yaml` 改名了，不写这份就没有任何输入方案。别的发行版通常不需要。 |
+| `run_after_setup-rime-grammar.sh.tmpl` | 下载 39 MB 的 `zh-hans-t-essay-bgw.gram` 并校验 sha256。 |
+
+**为什么 39 MB 的语法模型不进 git**：它是上游产物（`lotem/rime-octagram-data` 的 `hans` 分支）、二进制、且会随上游更新；进 git 会永久留在历史里、每次 clone 都白拉 39 MB。归档的是「下载方式 + 校验和」。
+
+- 网络在 mihomo 后面时：`RIME_GRAMMAR_PROXY=http://127.0.0.1:7890 chezmoi apply`（脚本也认 `https_proxy`）。
+- 覆盖下载地址：`RIME_GRAMMAR_URL=... chezmoi apply`。
+- 幂等且自愈：文件已在且大小正确就跳过；被误删后重新 `chezmoi apply` 会补回来。
+
+**改完 rime 配置必须重启 fcitx5 才重编译**（引擎在跑时改文件不生效）。
+
+⚠️ **只覆盖 Linux**：macOS 用 Squirrel、Windows 用 Weasel，rime 数据目录完全不同（`~/Library/Application Support/Rime/`、`%APPDATA%\Rime\`），未在那些平台验证过，故 `.chezmoiignore` 里按 OS 过滤掉了——故意不发未测代码。
 
 ## Windows 同步（2026-08-25 起）
 
