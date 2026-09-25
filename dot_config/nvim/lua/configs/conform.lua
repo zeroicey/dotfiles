@@ -3,6 +3,9 @@ local options = {
     lua = { "stylua" },
     rust = { "rustfmt" },
     go = { "gofmt" },
+    -- C / C++：统一用 clang-format；无 .clang-format 时采用 LLVM 风格
+    c = { "clang_format" },
+    cpp = { "cpp", "clang_format" },
     -- Web 前端（prettierd 由 mason 安装）
     javascript = { "prettierd" },
     javascriptreact = { "prettierd" },

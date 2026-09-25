@@ -10,8 +10,11 @@ map("i", "jk", "<ESC>")
 -- hover: K(default) -> gh
 map("n", "gh", vim.lsp.buf.hover, { desc = "hover documentation" })
 
--- LSP navigation: gd -> go to definition, gb -> jump back (jumplist)
+-- LSP navigation: gd -> definition, gD -> declaration, gr -> references, gI -> implementation
 map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
+map("n", "gD", vim.lsp.buf.declaration, { desc = "go to declaration" })
+map("n", "gr", vim.lsp.buf.references, { desc = "list references" })
+map("n", "gI", vim.lsp.buf.implementation, { desc = "go to implementation" })
 map("n", "gb", "<C-o>", { desc = "jump back" })
 
 -- J/K: 5-line movement (normal + visual)

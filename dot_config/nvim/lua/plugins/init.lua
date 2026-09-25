@@ -25,6 +25,9 @@ local ts_langs = {
   "regex",
   "make",
   "cmake",
+  -- C / C++
+  "c",
+  "cpp",
   -- Python（uv 虚拟环境主力语言）
   "python",
   -- 前端全栈
@@ -50,6 +53,7 @@ return {
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
+    lazy = false, -- LSP 配置必须在打开 C/C++ 文件前注册；headless/脚本启动也可靠
     config = function()
       require "configs.lspconfig"
     end,
@@ -198,6 +202,7 @@ return {
         -- 基础
         "stylua",
         "lua-language-server",
+        "clangd",
         "gopls",
         -- Python（uv 项目）
         "basedpyright",
