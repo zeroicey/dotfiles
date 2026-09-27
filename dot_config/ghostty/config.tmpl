@@ -1,3 +1,11 @@
+# No titlebar: under bspwm/tiling WMs the GTK4 CSD titlebar shows up as a
+# ~46px grey strip at the top of the window (hpnix 2026-09-27).
+# ⚠️ macOS: this also removes the native traffic-light buttons. If they are
+# missed, delete this line and use `macos-titlebar-style = tabs` instead.
+# ⚠️ Old key name: the pre-1.x `gtk-titlebar = false` was renamed to this key.
+#    A config carrying the old name silently gets a titlebar back.
+window-decoration = false
+
 font-family = {{ if eq .chezmoi.os "darwin" }}Cascadia Code NF{{ else }}CaskaydiaCove NF{{ end }}
 font-size = 13.5
 font-feature = ss01,ss02,ss03,ss19,ss20,calt
@@ -11,3 +19,22 @@ cursor-style = block
 
 # Disable shell integration cursor override (prevents it from changing cursor to bar)
 shell-integration-features = no-cursor,ssh-terminfo,ssh-env
+
+{{- if eq .chezmoi.os "darwin" }}
+macos-option-as-alt = true
+{{- end }}
+
+# Disable Alt+number tab switching
+# ⚠️ 2026-09-27: these used to live in a separate `config.ghostty` file, which
+#    ghostty never reads (it only reads `config`) ⇒ they had never taken effect
+#    on any machine. Kept here so they actually work now.
+keybind = alt+0=unbind
+keybind = alt+1=unbind
+keybind = alt+2=unbind
+keybind = alt+3=unbind
+keybind = alt+4=unbind
+keybind = alt+5=unbind
+keybind = alt+6=unbind
+keybind = alt+7=unbind
+keybind = alt+8=unbind
+keybind = alt+9=unbind
