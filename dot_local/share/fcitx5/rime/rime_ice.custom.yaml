@@ -1,0 +1,43 @@
+# 2026-09-25 由 hpcore 侧 pi 建立
+# （用户诉求：输入法更智能 + Shift 上屏原始拼音 + ,/. 翻页）
+#
+# 本文件是 rime 的**用户级 patch**，改的是 rime_ice 方案（雾凇拼音），
+# 不动 /nix/store 里的任何文件。同目录的 default.custom.yaml 是另一件事
+# （它是必需的，因为 nixpkgs 把上游 default.yaml 改名了，
+#   见 runbooks/hpnix.md「输入法」节）。
+#
+# 依据：
+#   - 键位语义见 rime 官方文档 editor/bindings 与 ascii_composer/switch_key
+#   - 造句需 grammar 模块 + 语法模型；本机 librime 1.16.1 已静态编入
+#     librime-octagram（实测导出符号 rime_require_module_grammar），
+#     只缺模型文件
+#   - 上游 rime-octagram-data 的 grammar.yaml 模板里，
+#     hans 段 = language: zh-hans-t-essay-bgw
+patch:
+  # ── 1. 整句造句（长句输入）────────────────────────────────────────
+  # 雾凇拼音主翻译器的 enable_sentence 默认没开（rime 默认 false），
+  # 所以打一长串拼音时只能拿词库里现成的词组去拼，
+  # ⇒ 第一个候选经常不是你要的。打开造句后由八股文语法模型整句排序。
+  # 模型文件放在 rime 用户目录：grammar.yaml + zh-hans-t-essay-bgw.gram
+  __include: grammar:/hans
+  "translator/enable_sentence": true
+
+  # ── 2. Shift 上屏原始拼音（nihao，而不是第一个候选「你好」）────
+  # 原来只有 Shift_L: commit_code，Shift_R 是 noop
+  # ⇒ 右手 Shift 按了没反应。两条都绑成 commit_code
+  # = 上屏当前编码（就是原始拼音）。
+  "ascii_composer/switch_key":
+    Shift_L: commit_code
+    Shift_R: commit_code
+
+  # ── 3. 逗号/句号翻页 ────────────────────────────────────────────
+  # 雾凇默认只绑了 -/= 翻页。追加 ,（上页）与 .（下页）。
+  # 用 when: has_menu 而不是 always
+  # ⇒ 没有候选窗时 , 和 . 仍然正常打标点。
+  "key_binder/bindings/+":
+    - {when: has_menu, accept: comma, send: Page_Up}
+    - {when: has_menu, accept: period, send: Page_Down}
+
+  # ── 4. 每页候选数 5 → 9 ─────────────────────────────────────────
+  # 一页只有 5 个时，想用 ,/. 翻页意义不大；9 个更实用。
+  "menu/page_size": 9

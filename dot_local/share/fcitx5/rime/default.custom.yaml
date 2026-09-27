@@ -1,0 +1,9 @@
+# 2026-09-24 由 hpcore 侧 pi 建立（依据：nixpkgs pkgs/by-name/ri/rime-ice/package.nix 的
+# meta.longDescription 明确要求这么写。原因见 runbooks/hpnix.md「输入法」节）
+#
+# nixpkgs 的 rime-ice 包里上游 default.yaml 被改名为 rime_ice_suggestion.yaml
+# （避免覆盖 fcitx5-rime 共享目录里那个占位的 default.yaml）
+# ⇒ 不写这份 patch，合并出来的 default.yaml 就没有 schema_list
+# ⇒ rime 一个方案都没有：能切到「中州韵」，但打拼音什么都不出（无候选窗）。
+patch:
+  __include: rime_ice_suggestion:/

@@ -1,0 +1,78 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/bin/sh
+# 拉取 rime 语法模型（八股文 / octagram），让雾凇拼音能开整句造句。
+#
+# 为什么模型不进 git：
+#   zh-hans-t-essay-bgw.gram 是 39 MB 的**上游产物**（lotem/rime-octagram-data
+#   的 hans 分支）。它是二进制、会随上游更新，且每次 clone 都要白拉 39 MB
+#   ⇒ 归档的是「下载方式 + 校验和」，不是文件本身。
+#   真正进 git 的是同目录的 grammar.yaml（775 B，定义了 grammar:/hans 契约）
+#   与 rime_ice.custom.yaml（开启 enable_sentence 的 patch）。
+#
+# 幂等：文件已存在且大小正确就跳过；下载走 `curl -C -` 可断点续传。
+# 自愈：这是 run_after_（不是 run_once_），`chezmoi apply`/`update` 都会跑，
+#       所以模型被误删后重新拉一次即可自愈。
+set -e
+
+RIME_DIR="$HOME/.local/share/fcitx5/rime"
+MODEL="zh-hans-t-essay-bgw.gram"
+EXPECT_SIZE=40925228
+EXPECT_SHA256="d3cb2438c1fdcd6a855dd6ca8f5c1060a29273c6b64c2c2c69af67cd71b6aa7e"
+
+# 优先走自建 gh 代理（本网直连 raw.githubusercontent 常常失败），
+# 失败再回退官方地址。可用 RIME_GRAMMAR_URL 覆盖。
+PROXY_URL="https://gh.zeroicey.me/https://raw.githubusercontent.com/lotem/rime-octagram-data/hans/$MODEL"
+DIRECT_URL="https://raw.githubusercontent.com/lotem/rime-octagram-data/hans/$MODEL"
+URL="${RIME_GRAMMAR_URL:-$PROXY_URL}"
+
+# 机器若在 mihomo 之类出站代理后面，设 RIME_GRAMMAR_PROXY（curl 也自动认
+# https_proxy / HTTPS_PROXY 环境变量）。hpnix 上是 http://127.0.0.1:7890。
+CURL_PROXY_OPTS=""
+if [ -n "${RIME_GRAMMAR_PROXY:-}" ]; then
+  CURL_PROXY_OPTS="-x $RIME_GRAMMAR_PROXY"
+fi
+
+command -v curl >/dev/null 2>&1 || { echo "[dotfiles] rime: 没有 curl，跳过模型下载"; exit 0; }
+command -v sha256sum >/dev/null 2>&1 || { echo "[dotfiles] rime: 没有 sha256sum，跳过模型下载"; exit 0; }
+
+mkdir -p "$RIME_DIR"
+DST="$RIME_DIR/$MODEL"
+
+# 快速路径：大小对就跳过（不重算 39 MB 的 sha256，除非大小异常）
+if [ -f "$DST" ]; then
+  cur_size=$(wc -c < "$DST" | tr -d ' ')
+  if [ "$cur_size" = "$EXPECT_SIZE" ]; then
+    exit 0
+  fi
+  echo "[dotfiles] rime: 模型大小异常($cur_size != $EXPECT_SIZE)，重新下载"
+  rm -f "$DST"
+fi
+
+echo "[dotfiles] rime: 下载语法模型 $MODEL (39 MB)…"
+# shellcheck disable=SC2086  # CURL_PROXY_OPTS 需按词拆分
+if ! curl -fL $CURL_PROXY_OPTS --retry 3 --retry-delay 2 -C - -o "$DST" "$URL" 2>/dev/null; then
+  if [ "$URL" = "$PROXY_URL" ]; then
+    echo "[dotfiles] rime: 代理地址失败，回退官方地址"
+    rm -f "$DST"
+    # shellcheck disable=SC2086
+    curl -fL $CURL_PROXY_OPTS --retry 3 --retry-delay 2 -C - -o "$DST" "$DIRECT_URL"
+  else
+    rm -f "$DST"
+    echo "[dotfiles] rime: 模型下载失败（不影响其余配置）"
+    exit 0
+  fi
+fi
+
+actual=$(sha256sum "$DST" | cut -d' ' -f1)
+if [ "$actual" != "$EXPECT_SHA256" ]; then
+  echo "[dotfiles] rime: 校验和不符（$actual），已删除，请重跑"
+  rm -f "$DST"
+  exit 1
+fi
+
+echo "[dotfiles] rime: 语法模型就绪 $DST"
+
+# 提醒：模型只是数据，整句造句还要 rime_ice.custom.yaml 里的
+#       __include: grammar:/hans + translator/enable_sentence: true
+#       改完 rime 配置需重启 fcitx5 才重编译。
+{{- end -}}

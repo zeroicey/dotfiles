@@ -19,3 +19,23 @@ package.json
 {{ if eq .chezmoi.os "windows" }}.config/ghostty{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/yazi{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/herdr{{ end }}
+
+# ── fcitx5 / rime（2026-09-25 加入）────────────────────────────────
+# 只在 Linux 落地：macOS 用 Squirrel、Windows 用 Weasel，rime 数据目录完全不同
+# （~/Library/Application Support/Rime/ 、%APPDATA%\Rime\），未在那些平台验证过，
+# 故意不发未测代码。要加 macOS/Windows 支持请另写 run_ 脚本按 OS 分发。
+{{ if ne .chezmoi.os "linux" }}.config/fcitx5{{ end }}
+{{ if ne .chezmoi.os "linux" }}.local/share/fcitx5{{ end }}
+
+# rime 的**运行时状态**：编译产物/用户学习数据/同步目录 —— 绝不进 git
+# build/ 是编译出来的 .bin（实测 74 MB），userdb/ 是本机学习数据（每台机器不同）
+.local/share/fcitx5/rime/build
+.local/share/fcitx5/rime/sync
+.local/share/fcitx5/rime/*.userdb
+.local/share/fcitx5/rime/*.userdb.*
+.local/share/fcitx5/rime/*.log
+.local/share/fcitx5/rime/*.bin
+.local/share/fcitx5/rime/user.yaml
+.local/share/fcitx5/rime/installation.yaml
+# 39 MB 语法模型是上游产物，由 run_after_setup-rime-grammar.sh 下载+校验，不进 git
+.local/share/fcitx5/rime/*.gram

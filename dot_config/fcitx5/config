@@ -1,0 +1,16 @@
+# fcitx5 全局配置（chezmoi 管理）
+#
+# 2026-09-25 加入 [Hotkey] 段的原因：
+#   fcitx5 5.1.19 的 `AltTriggerKeys`（"Temporarily Toggle Input Method"）
+#   **默认值就是 Key("Shift_L")** —— 见上游源码
+#   src/lib/fcitx/globalconfig.cpp: `.defaultValue{{Key("Shift_L")}}`。
+#   后果：fcitx5 默认抢走左 Shift 做「临时切换中英」，在中文 composing 状态下
+#   按下它会先把输入法切走、顺带把当前组字**上屏成第一个候选**
+#   （打 nihao 得到「你好」而不是 nihao），rime 的
+#   ascii_composer/switch_key: Shift_L: commit_code 根本没机会执行。
+#   社区结论一致：fcitx5 下必须把配置里的 Shift-L 取消掉，否则覆盖 rime。
+#
+# 处置：清空 AltTriggerKeys，把 Shift 还给 rime。
+# 代价：失去「单按 Shift 临时切英文」。需要临时输英文用 Ctrl+Space 切到英文输入法。
+[Hotkey]
+AltTriggerKeys=
