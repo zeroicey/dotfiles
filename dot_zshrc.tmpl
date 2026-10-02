@@ -202,6 +202,10 @@ fi
 ## Go
 export PATH="$HOME/go/bin:$PATH"
 
+## npm 全局 bin（pi 等）—— 2026-10-02 从 hpcore 分支提到通用段：pi 已铺到多台机器
+# （hpcore / hpbook / bjbuwe），不只运维核心用
+[ -d "$HOME/.npm-global/bin" ] && export PATH="$HOME/.npm-global/bin:$PATH"
+
 ## fnm
 FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
@@ -327,9 +331,6 @@ function sudostatus() {
         echo "⚪ sudo 免密：未开启"
     fi
 }
-
-# pi 安装位置
-export PATH="$HOME/.npm-global/bin:$PATH"
 
 # 未设代理时自动开启 → 走本机 mihomo（127.0.0.1:7890）
 # 并自愈「hpzero 旁路由退役后残留的 192.168.5.10:7890 死代理」（避免新 shell 继承失效代理）

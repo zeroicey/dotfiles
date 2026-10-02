@@ -153,16 +153,6 @@ return {
       opts.ensure_installed = vim.list_extend(opts.ensure_installed or {}, ts_langs)
     end,
     config = function()
-      -- iqibdl 出网走公共 WiFi、直连 GitHub 不通：parser 源码拉不下来（安装器反而会把
-      -- 同步进去的 site/queries 清掉）。所以这台机器不联网安装，直接消费
-      -- 「从 hpcore 同步来的 site/parser/*.so」+「插件自带的 runtime/queries」。
-      if vim.uv.os_gethostname() == "iqibdl" then
-        local plugin = vim.fn.stdpath "data" .. "/lazy/nvim-treesitter"
-        if vim.uv.fs_stat(plugin .. "/runtime/queries") then
-          vim.opt.rtp:prepend(plugin .. "/runtime")
-        end
-        return
-      end
       require("nvim-treesitter").install(ts_langs)
     end,
   },
@@ -170,14 +160,19 @@ return {
   -- ============ Web 开发 ============
 
   -- mason 自身配置：沿用 NvChad 的（PATH=skip 等），并把 GitHub release 下载
-  -- 统一改走自建 gh 代理（AGENTS 规则：GitHub 操作不直连；iqibdl 公共 WiFi 上直连必失败，
-  -- 其它端走代理也更稳且不依赖 shell 里的 Clash 代理变量）
+  -- 统一改走自建 gh 代理（AGENTS 规则：GitHub 操作不直连）。
+  -- ⚠️ 例外：bjbuwe（原 iqibdl，2026-09 整盘重装后改名）实测连不上 gh.zeroicey.me
+  -- （该域名在 Cloudflare 后面，本机直连/走 mihomo 代理都是 000）⇒ 这台机器回退官方地址，
+  -- 靠“直连 github.com”下载（实测能通，1.7~11 s，慢但可用）。
   {
     "mason-org/mason.nvim",
     opts = function(_, opts)
       opts = vim.tbl_deep_extend("force", require "nvchad.configs.mason", opts or {})
       opts.github = opts.github or {}
-      opts.github.download_url_template = "https://gh.zeroicey.me/https://github.com/%s/releases/download/%s/%s"
+      opts.github.download_url_template = (vim.uv.os_gethostname() == "bjbuwe"
+          and "https://github.com"
+          or "https://gh.zeroicey.me/https://github.com")
+        .. "/%s/releases/download/%s/%s"
       return opts
     end,
   },

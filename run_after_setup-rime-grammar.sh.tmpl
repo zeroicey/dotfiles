@@ -1,5 +1,8 @@
-{{- if eq .chezmoi.os "linux" -}}
+{{- if and (eq .chezmoi.os "linux") (ne .chezmoi.hostname "bjbuwe") -}}
 #!/bin/sh
+# ⚠️ bjbuwe（无 GUI 的渗透测试机）由上面的 hostname gate 排除：
+#    它已在 .chezmoiignore 里跳过 fcitx5/rime，这里也要 gate，
+#    否则每次 chezmoi apply 都会白拉 39 MB 语法模型（2026-10-02 加）
 # 拉取 rime 语法模型（八股文 / octagram），让雾凇拼音能开整句造句。
 #
 # 为什么模型不进 git：

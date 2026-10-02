@@ -25,10 +25,23 @@
 [url "https://gh.zeroicey.me/https://github.com/"]
 	insteadOf = https://github.com/
 {{ end }}
-{{ if eq .chezmoi.hostname "iqibdl" }}
-# iqibdl 特有：挂公共 WiFi，直连 GitHub 不通 → 所有 github.com 的 git 操作重写成自建 gh 代理
-# （chezmoi update / lazy.nvim 插件 clone / mason registry 全走这里；
-#  mason 的 release 下载另由 nvim 配置里的 download_url_template 重写）
-[url "https://gh.zeroicey.me/https://github.com/"]
-	insteadOf = https://github.com/
+{{ if eq .chezmoi.hostname "bjbuwe" }}
+# bjbuwe 特有（原 iqibdl，2026-09 整盘重装后改名）：唯一出网面是校园 WiFi + 本机 mihomo。
+# 直连 github.com 实测能通但很慢（1.7~11 s），走本机代理 0.6 s ⇒ GitHub 系域名走代理。
+# ⚠️ 不套 gh.zeroicey.me 重写（iqibdl 时代的做法）：该域名在 Cloudflare 后面，
+#    本机实测直连/走代理都是 000（不通）—— 别把它当“通用外网加速”。
+# ⚠️ 只写 GitHub 系域名的 per-URL proxy，不用全局 [http] proxy：
+#    本机有经网线直连的内网服务（如 10.88.0.1:3005 的 new-api），全局代理会把它也拐走。
+[http "https://github.com/"]
+	proxy = http://127.0.0.1:7890
+[http "https://api.github.com/"]
+	proxy = http://127.0.0.1:7890
+[http "https://codeload.github.com/"]
+	proxy = http://127.0.0.1:7890
+[http "https://raw.githubusercontent.com/"]
+	proxy = http://127.0.0.1:7890
+[http "https://objects.githubusercontent.com/"]
+	proxy = http://127.0.0.1:7890
+[http "https://gist.github.com/"]
+	proxy = http://127.0.0.1:7890
 {{ end }}

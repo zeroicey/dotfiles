@@ -39,3 +39,12 @@ package.json
 .local/share/fcitx5/rime/installation.yaml
 # 39 MB 语法模型是上游产物，由 run_after_setup-rime-grammar.sh 下载+校验，不进 git
 .local/share/fcitx5/rime/*.gram
+
+# ── bjbuwe（无 GUI 的渗透测试机，2026-10-02 落地）──────────────────
+# 这台机是 headless 服务器：无桌面环境、无 VSCode、无输入法、无图形终端。
+# 跳过纯桌面资产 —— 否则每次 apply 都白写一堆用不上的配置，
+# 且 rime 的下载脚本会白拉 39 MB 语法模型（该脚本已单独按主机名 gate）。
+{{ if eq .chezmoi.hostname "bjbuwe" }}.config/fcitx5{{ end }}
+{{ if eq .chezmoi.hostname "bjbuwe" }}.local/share/fcitx5{{ end }}
+{{ if eq .chezmoi.hostname "bjbuwe" }}.config/ghostty{{ end }}
+{{ if eq .chezmoi.hostname "bjbuwe" }}.config/vscode{{ end }}
