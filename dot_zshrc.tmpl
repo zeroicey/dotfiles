@@ -135,17 +135,16 @@ alias l='eza -lah'
 
 # 开启终端代理
 function proxyon() {
-    # 平台自适应：hpcore→hpzero 旁路由 7890（带认证，密码不入 git，从 0600 secret 读）；macOS→本机 7897
+    # 平台自适应：两头都走本机内核（macOS 7897 / hpcore 7890）。
+    # 2026-09-19 hpzero 旁路由退役 → 回到本机 mihomo，不再有 192.168.5.10 与代理口令。
     local proxy=""
     if [[ "$(uname)" == "Darwin" ]]; then
         proxy="http://127.0.0.1:7897"
     else
-        local _pf="$HOME/.config/hpcore-secrets/clash-proxy.pass"
-        if [[ -r "$_pf" ]]; then
-            proxy="http://Clash:$(<"$_pf")@192.168.5.10:7890"
-        else
-            echo "proxyon: 缺 $_pf（hpzero 代理密码），未启用代理" >&2
-            return 1
+        proxy="http://127.0.0.1:7890"
+        # 内核没在跑就别静默开一个死地址（R1：死代理残留极难排查）
+        if command -v ncat >/dev/null 2>&1 && ! ncat -z 127.0.0.1 7890 >/dev/null 2>&1; then
+            echo "proxyon: 127.0.0.1:7890 无监听（mihomo 没在跑？）——仍按本机内核设置" >&2
         fi
     fi
     # ⚠️ no_proxy 里禁止出现裸 IPv6 子网：urllib/httpx 按 ':' 切 host:port，会把
@@ -332,11 +331,11 @@ function sudostatus() {
 # pi 安装位置
 export PATH="$HOME/.npm-global/bin:$PATH"
 
-# 未设代理时自动开启 → 默认走 hpzero 旁路由（含 AdGuard 过滤）
-# 并自愈「mihomo 下线后残留的 127.0.0.1:7890 死代理」（避免新 shell 继承失效代理）
+# 未设代理时自动开启 → 走本机 mihomo（127.0.0.1:7890）
+# 并自愈「hpzero 旁路由退役后残留的 192.168.5.10:7890 死代理」（避免新 shell 继承失效代理）
 if [[ -z "$http_proxy" && -z "$https_proxy" ]]; then
   proxyon >/dev/null 2>&1
-elif [[ "$http_proxy" == *127.0.0.1:7890* || "$https_proxy" == *127.0.0.1:7890* || "$all_proxy" == *127.0.0.1:7890* ]]; then
+elif [[ "$http_proxy" == *192.168.5.10:7890* || "$https_proxy" == *192.168.5.10:7890* || "$all_proxy" == *192.168.5.10:7890* ]]; then
   proxyon >/dev/null 2>&1
 fi
 {{- end }}
