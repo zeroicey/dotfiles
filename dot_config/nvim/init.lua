@@ -245,9 +245,14 @@ if not has_local_clipboard then
       ["*"] = function() return { last[1], last[2] } end,
     },
   }
-  -- 只在 provider 可用后才启用 unnamedplus，否则每次 y 都会报错
-  o.clipboard = "unnamedplus"
 end
+
+-- ⚠️ `unnamedplus` 必须**无条件**设，与上面有没有装 OSC 52 无关：
+--   · 有本地 provider（mac / Windows 的 clip+powershell / tmux …）⇒ 交给 Nvim 自己的 provider
+--   · 没有（hpcore 这种 headless）⇒ 交给上面那段 OSC 52
+-- 早先把它写在 `if not has_local_clipboard` 里面，后果是 **mac/Windows 上 y 根本不到系统剪贴板**
+-- （2026-10-19 多端同步时在 hpstation 上验收才抓到：`clipboard(opt)` 为空）。
+o.clipboard = "unnamedplus"
 
 
 -- ---------------------------------------------------------------------------
